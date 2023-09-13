@@ -1,0 +1,7 @@
+class Usuario_x_ContactoEmergencia {
+    
+  constructor(usuario,contactoEmergencia) {
+    this.usuario = usuario;
+    this.contactoEmergencia=contactoEmergencia;
+  }
+}
