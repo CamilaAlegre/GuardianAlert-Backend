@@ -1,20 +1,20 @@
+
+const Usuario = require('./Usuario');
 class Registración {
     constructor(consultaUsuario) {
       this.consultaUsuario = consultaUsuario;
     }
   
-    async registrarUsuario(nombres, apellidos, email, contraseña, nacionalidad) {
+    async registrarUsuario(nombre_y_apellido, email, telefono, pais,provincia,ciudad,fechadenacimiento,contraseña){
       try {
-        // Verificar si el usuario ya existe
-        const usuarioExistente = await this.consultaUsuario.consultaUsuario(email);
+        const usuarioExistente = await this.consultaUsuario.consultarUsuario(email);
         if (usuarioExistente) {
           throw new Error('El usuario ya existe.');
         }
   
-        // Crear un nuevo usuario
-        const nuevoUsuario = new Usuario(nombres, apellidos, email, contraseña, nacionalidad);
+        const nuevoUsuario = new Usuario(nombre_y_apellido, email, telefono, pais,provincia,ciudad,fechadenacimiento,contraseña);
         
-        // Agregar el nuevo usuario a la base de datos
+       
         await this.consultaUsuario.agregarUsuario(nuevoUsuario);
   
         console.log('Registro exitoso. Usuario creado:');
@@ -25,16 +25,5 @@ class Registración {
     }
   }
   
-  // Ejemplo de uso
-  const consultaUsuario = new DB_Usuarios();
-  const registroUsuario = new Registración(consultaUsuario);
-  
-  // Registrar un nuevo usuario
-  registroUsuario.registrarUsuario(
-    'Camila Anahi',
-    'Alegre',
-    'ejemplo@example.com',
-    'contraseña123',
-    'Argentina'
-  );
-  
+
+  module.exports =  Registración;
