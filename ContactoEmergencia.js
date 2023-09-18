@@ -1,8 +1,16 @@
 class ContactoEmergencia {
-  constructor(nombre, telefono,email, relacion) {
+  constructor(usuarionombreyapellido,usuarioemail,nombre,telefono,email,relacion) {
+    
+    this.usuarionombreyapellido=usuarionombreyapellido ;
+    this.usuarioemail=usuarioemail;
     this.nombre = nombre;
     this.telefono = telefono;
     this.email=email;
-    this.relacion = relacion;
+    this.relacion=relacion;
   }
+
 }
+
+
+
+module.exports =  ContactoEmergencia;
