@@ -1,11 +1,13 @@
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, Db } = require('mongodb');
+//const { consultarUsuario } = require('./ControladorUsuario');
+const Usuario = require ('./Usuario');
 
 const user = "alegreanahi1995";
 const password = "Zm7UfeOn9dfI3XXE";
 const uri = `mongodb+srv://${user}:${password}@cluster0.scrh4hl.mongodb.net/?retryWrites=true&w=majority`;
 const dbName = "db_GuardianAlert";
 
-class DB_Usuario {
+class DB_Usuarios {
 
   async agregarUsuario(usuario) {
     const client = new MongoClient(uri, {
@@ -23,17 +25,18 @@ class DB_Usuario {
       console.log('Conexión exitosa a MongoDB');
       const db = client.db(dbName);
 
-      // Agregar usuarios
       const collectionName = "Usuarios";
       const collection = db.collection(collectionName);
 
-      // Documento que deseas agregar
       const documento = {
-        nombres: usuario.nombres,
-        apellidos: usuario.apellidos,
+        nombre_y_apellido : usuario.nombre_y_apellido,
+        email : usuario.email,
+        telefono:usuario.telefono,
+        pais:usuario.pais,
+        provincia:usuario.provincia,
+        ciudad:usuario.ciudad,
         fechadenacimiento: usuario.fechadenacimiento,
-        email: usuario.email,
-        nacionalidad: usuario.nacionalidad,
+        contraseña : usuario.contraseña,
       };
 
       const result = await collection.insertOne(documento);
@@ -61,7 +64,7 @@ class DB_Usuario {
     try {
       await client.connect();
 
-      const db = this.client.db(dbName);
+      const db = client.db(dbName);
 
       const collectionName = "Usuarios";
       const collection = db.collection(collectionName);
@@ -91,7 +94,7 @@ class DB_Usuario {
     try {
       await client.connect();
 
-      const db = this.client.db(dbName);
+      const db = client.db(dbName);
 
       const collectionName = "Usuarios";
       const collection = db.collection(collectionName);
@@ -101,6 +104,20 @@ class DB_Usuario {
       if (usuario) {
         console.log('Usuario encontrado:');
         console.log(usuario);
+
+
+
+        return new Usuario(
+          usuario.nombre_y_apellido,
+          usuario.email,
+          usuario.telefono,
+          usuario.pais,
+          usuario.provincia,
+          usuario.ciudad,
+          usuario.fechadenacimiento,
+          usuario.contraseña );
+  
+
       } else {
         console.log(`Usuario con email ${email} no encontrado.`);
       }
@@ -128,20 +145,20 @@ class DB_Usuario {
         console.log('Conexión exitosa a MongoDB');
         const db = client.db(dbName);
   
-        // Colección de usuarios
         const collectionName = "Usuarios";
         const collection = db.collection(collectionName);
   
-        // Criterio de búsqueda (en este caso, usaremos el campo "email" como identificador único)
         const filtro = { email: usuario.email };
   
-        // Nuevos datos que deseas actualizar
         const nuevosDatos = {
           $set: {
-            nombres: usuario.nombres,
-            apellidos: usuario.apellidos,
-            fechadenacimiento: usuario.fechadenacimiento,
-            nacionalidad: usuario.nacionalidad,
+            nombre_y_apellido : usuario.nombre_y_apellido,
+            telefono:usuario.telefono,
+            pais:usuario.pais,
+            provincia:usuario.provincia,
+            ciudad:usuario.ciudad,
+            fechadenacimiento:usuario.fechadenacimiento,
+            contraseña: usuario.contraseña,
           },
         };
   
@@ -162,16 +179,5 @@ class DB_Usuario {
 
 }
 
-/*
-  async main() {
-    try {
-      await this.agregarUsuario();
-    } catch (error) {
-  console.error('Error en la función principal:', error);
-    }
-  }
-}
 
-// Crear una instancia de Consulta_Usuario y ejecutar la función principal
-const consultaUsuario = new Consulta_Usuario();
-consultaUsuario.main().catch(console.error);*/
+module.exports =  DB_Usuarios;
