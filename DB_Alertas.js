@@ -6,6 +6,8 @@ const password = "Zm7UfeOn9dfI3XXE";
 const uri = `mongodb+srv://${user}:${password}@cluster0.scrh4hl.mongodb.net/?retryWrites=true&w=majority`;
 
 const dbName = "db_GuardianAlert";
+const Evento = require ('./Evento');
+
 
 class DB_Alertas {
     async agregarHistorialEventos(alerta) {
@@ -27,16 +29,9 @@ class DB_Alertas {
         const collectionName = "Alertas";
         const collection = db.collection(collectionName);
   
-        // Documento que deseas agregar
-       /* const documento = {
-          usuario: 'Camila Anahi Alegre',
-          fecha: '11/08/2023',
-          hora: '12:30',
-          lugar: 'Garin aaaaaaa',
-          estadodelevento: 'Cayo',
-        };*/
         const documento = {
-          usuario: alerta.usuario,
+          usuario: alerta.nombreyapellidousuario,
+          emailusuario:alerta.emailusuario,
           fecha: alerta.fecha,
           hora: alerta.hora,
           lugar: alerta.lugar,
@@ -52,7 +47,7 @@ class DB_Alertas {
 
 
     
-    async consultasdealertas(usuario) {
+    async consultasdealertas(emailusuario) {
       const client = new MongoClient(uri, {
         useNewUrlParser: true,
         useUnifiedTopology: true,
@@ -71,10 +66,11 @@ class DB_Alertas {
         const collectionName = "Alertas";
         const collection = db.collection(collectionName);
     
-        // Filtrar alertas por el campo "usuario"
-        const alertas = await collection.find({ usuario: usuario }).toArray();
+        const alertas = await collection.find({ emailusuario: emailusuario}).toArray();
     
-        return alertas;
+        console.log(alertas);
+        return new Evento(alertas.usuario, alertas.emailusuario,alertas.fecha,alertas.hora, alertas.lugar,alertas.estado);
+     
       } finally {
         await client.close();
       }
@@ -83,14 +79,26 @@ class DB_Alertas {
 
 
   }
-  /*
-  async function main() {
-    try {
-      const dbAlertas = new DB_Alertas();
-      await dbAlertas.agregarHistorialEventos();
-    } catch (error) {
-      console.error('Error en la función principal:', error);
-    }
-  }
+
   
-  main().catch(console.error);*/
+
+  module.exports =  DB_Alertas;
+
+
+
+
+const db_alertas = new DB_Alertas();
+
+const nuevaAlerta = {
+  nombreyapellidousuario: 'Camila Anahi Alegre',
+  emailusuario: 'ejemplo@example.com',
+  fecha: '2023-09-18',
+  hora: '15:30:00',
+  lugar: 'Ejemplo City',
+  estadodelevento: 'Activo',
+};
+
+db_alertas.agregarHistorialEventos(nuevaAlerta);
+
+const emailUsuarioAConsultar = 'ejemplo@example.com'; 
+db_alertas.consultasdealertas(emailUsuarioAConsultar);
