@@ -28,10 +28,12 @@ class DB_ContactosEmergencia {
       const collection = db.collection(collectionName);
 
       const documento = {
+        usuarionombreyapellido: contactoEmergencia.usuarionombreyapellido,
+        usuarioemail: contactoEmergencia.usuarioemail,
         nombre: contactoEmergencia.nombre,
         telefono: contactoEmergencia.telefono,
         email: contactoEmergencia.email,
-        relacion: contactoEmergencia.relacion,
+        relacion:contactoEmergencia.relacion
       };
 
       const result = await collection.insertOne(documento);
@@ -42,7 +44,7 @@ class DB_ContactosEmergencia {
   }
 
 
-  async consultaContactosdeEmergencia(usuario) {
+  async consultaContactosdeEmergencia(usuarioemail) {
     const client = new MongoClient(uri, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
@@ -61,17 +63,16 @@ class DB_ContactosEmergencia {
       const collectionName = "ContactosEmergencia";
       const collection = db.collection(collectionName);
   
-      // Filtrar contactos de emergencia por el campo "usuario"
-      const Usuario_x_ContactoEmergencia = await collection.find({ usuario: usuario }).toArray();
-  
+      const Usuario_x_ContactoEmergencia = await collection.find({ usuarioemail: usuarioemail }).toArray();
+     console.log(Usuario_x_ContactoEmergencia);
       return Usuario_x_ContactoEmergencia;
     } finally {
       await client.close();
     }
   }
-}
 
-async function eliminarContactosDeEmergencia(filtro) {
+
+async  eliminarContactosDeEmergencia(filtro) {
   const client = new MongoClient(uri, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
@@ -98,25 +99,6 @@ async function eliminarContactosDeEmergencia(filtro) {
     await client.close();
   }
 }
-
-
-/* esto para agregar contactos de emergencia como se llamaria
-async function main() {
-  try {
-    const dbContactosEmergencia = new DB_ContactosEmergencia();
-    await dbContactosEmergencia.agregarContactosdeEmergencia();
-  } catch (error) {
-    console.error('Error en la función principal:', error);
-  }
 }
 
-main().catch(console.error);
-*/
-
-//como se llamaria para eliminar contactos de emergencia
-/*
-const filtro = { nombre: "Juan" };
-eliminarContactosDeEmergencia(filtro)
-  .catch(error => {
-    console.error('Error al eliminar contactos de emergencia:', error);
-  });*/
+module.exports = DB_ContactosEmergencia;
