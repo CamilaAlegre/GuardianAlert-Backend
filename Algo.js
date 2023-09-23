@@ -89,7 +89,7 @@ class NeuralNetwork {
 
 // Ejemplo de uso:
 const neuralNetwork = new NeuralNetwork();
-neuralNetwork.loadCSVData('C:\\Users\\OEM\\Downloads\\archive\\Train.csv');
+neuralNetwork.loadCSVData('./Train.csv');
 
 const trainingOptions = {
   rate: 0.1,
