@@ -26,8 +26,9 @@ const botManager = new TelegramBotManager(token);
 // ID del chat del usuario que envía el mensaje
 const senderChatId = '1119289333';
 
+const estadoalerta='Golpeo';
 // El mensaje que deseas enviar
-const message = 'Hola, este es un mensaje entre usuarios en Telegram.';
+const message = 'Hola, el usuario se '+estado+ ' y se encuentra en la siguiente ubicación';
 
 // Envía el mensaje
 botManager.sendMessage(senderChatId, message)
