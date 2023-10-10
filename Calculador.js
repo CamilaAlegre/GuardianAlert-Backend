@@ -71,9 +71,9 @@ const gyro_max = Math.max(...magnitudesGiroscopio);
 
 
 
-const gyro_kurtosis = this.calcularCurtosis(magnitudesAceleracionDeTodaLaventana);
-const gyro_skewness = this.calcularAsimetria(magnitudesAceleracionDeTodaLaventana);
-// Resto de los cálculos
+const gyro_kurtosis = this.calcularCurtosis(magnitudesGyroscopioDeTodaLaventana);
+const gyro_skewness = this.calcularAsimetria(magnitudesGyroscopioDeTodaLaventana)
+
 const linMaxValue = this.calcularLinMax(datos);
 const postLinMaxValue = this.calcularPostLinMax(datos);
 const postGyroMaxValue = this.calcularPostGyroMax(datos);
@@ -126,6 +126,7 @@ return Math.sqrt(vector.x ** 2 + vector.y **2 + vector.z ** 2);
 
 
 
+console.log(datos);
 const n = datos.length;
 
 const media = datos.reduce((sum, val) => sum + val, 0) / n;
@@ -223,19 +224,18 @@ return post_gyro_max;
 
 
 module.exports = Calculador;
-
 /*
+
 const datos = [
-    { timestamp: 1, acc_x: 0.5, acc_y: 0.2, acc_z: 0.9, gyro_x: 0.1, gyro_y: 0.3, gyro_z: 0.2 },
-    { timestamp: 2, acc_x: 0.5, acc_y: 0.2, acc_z: 0.9, gyro_x: 0.1, gyro_y: 0.3, gyro_z: 0.2 },
-    { timestamp: 3, acc_x: 0.5, acc_y: 0.2, acc_z: 0.9, gyro_x: 0.1, gyro_y: 0.3, gyro_z: 0.2 },
-    { timestamp: 4, acc_x: 0.5, acc_y: 0.2, acc_z: 0.9, gyro_x: 0.1, gyro_y: 0.3, gyro_z: 0.2 },
-    { timestamp: 5, acc_x: 0.5, acc_y: 0.2, acc_z: 0.9, gyro_x: 0.1, gyro_y: 0.3, gyro_z: 0.2 },
-    { timestamp: 6, acc_x: 0.5, acc_y: 0.2, acc_z: 0.9, gyro_x: 0.1, gyro_y: 0.3, gyro_z: 0.2 },
-    // Más datos aquí
+    { timestamp: 1, acc_x: 0.5, acc_y: 0.2, acc_z: 0.9, gyro_x: 0.5, gyro_y: 0.2, gyro_z: 0.9 },
+    { timestamp: 2, acc_x: 0.5, acc_y: 0.2, acc_z: 0.9, gyro_x: 0.5, gyro_y: 0.2, gyro_z: 0.9 },
+    { timestamp: 3, acc_x: 0.5, acc_y: 0.2, acc_z: 0.9, gyro_x: 0.5, gyro_y: 0.2, gyro_z: 0.9 },
+    { timestamp: 4, acc_x: 0.5, acc_y: 0.2, acc_z: 0.9, gyro_x: 0.5, gyro_y: 0.2, gyro_z: 0.9 },
+    { timestamp: 5, acc_x: 0.5, acc_y: 0.2, acc_z: 0.9, gyro_x: 0.5, gyro_y: 0.2, gyro_z: 0.9 },
+    { timestamp: 6, acc_x: 0.5, acc_y: 0.2, acc_z: 0.9, gyro_x: 0.5, gyro_y: 0.2, gyro_z: 0.9 },
+   
   ];
 
-  // Crear una instancia de la clase AlgoritmoDeCaidas
   const algoritmo = new Calculador();
   
 
