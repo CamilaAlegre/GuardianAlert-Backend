@@ -32,13 +32,7 @@ const message = 'Hola, este es un mensaje entre usuarios en Telegram.';
 // Envía el mensaje
 botManager.sendMessage(senderChatId, message)
   .then(() => {
-    console.log('Mensaje enviado con éxito desde el usuario que envía.');
-  })
-  .catch((error) => {
-    console.error('Error al enviar el mensaje desde el usuario que envía:', error);
-  });
-
-// Coordenadas de la ubicación (latitud y longitud)
+    // Coordenadas de la ubicación (latitud y longitud)
 const latitude = 37.7749;
 const longitude = -122.4194;
 
@@ -50,3 +44,9 @@ botManager.sendLocation(senderChatId, latitude, longitude)
   .catch((error) => {
     console.error('Error al enviar la ubicación:', error);
   });
+  })
+  .catch((error) => {
+    console.error('Error al enviar el mensaje desde el usuario que envía:', error);
+  });
+
+
