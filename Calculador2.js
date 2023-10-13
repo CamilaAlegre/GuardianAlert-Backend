@@ -1,33 +1,10 @@
 
 class Calculador{
-    // Supongamos que tienes un arreglo de objetos JSON llamado 'datos' con los campos relevantes.
+   calcularCaracteristicas(datosentrada) {
 
 
-
-      // Función para calcular las características
-   calcularCaracteristicas(datos) {
-  /*  const ventanaDatosCuartoSegundo = datos.slice(3, 4); // Cuarto segundo de la ventana
-
-    const magnitudesAceleracion = ventanaDatosCuartoSegundo.map(dato => this.calcularMagnitud({ x: dato.acc_x, y: dato.acc_y, z: dato.acc_z }));
-    const magnitudesGiroscopio = ventanaDatosCuartoSegundo.map(dato => this.calcularMagnitud({ x: dato.gyro_x, y: dato.gyro_y, z: dato.gyro_z }));
-//console.log(magnitudesAceleracion);
-    const acc_max = Math.max(...magnitudesAceleracion);
-
-    console.log(acc_max);
-    const acc_kurtosis = this.calcularCurtosis(magnitudesAceleracion);
-    const acc_skewness = this.calcularAsimetria(magnitudesAceleracion);
-
-    const gyro_max = Math.max(...magnitudesGiroscopio);
-    const gyro_kurtosis = this.calcularCurtosis(magnitudesGiroscopio);
-    const gyro_skewness = this.calcularAsimetria(magnitudesGiroscopio);
-
-    const linMaxValue = this.calcularLinMax(datos);
-    const postLinMaxValue = this.calcularPostLinMax(datos);
-    const postGyroMaxValue = this.calcularPostGyroMax(datos);
-*/
-
-
-const ventanaDatosCuartoSegundo = datos.slice(3, 4); // Cuarto segundo de la ventana (tercera fila)
+const datos=datosentrada.filter(dato => dato.timestamp >= 0 && dato.timestamp <7);
+const ventanaDatosCuartoSegundo =datos.filter(dato => dato.timestamp >= 4 && dato.timestamp <5);
 
 const magnitudesAceleracion = [];
 for (const dato of ventanaDatosCuartoSegundo) {
@@ -105,17 +82,7 @@ const mag_max = Math.max(...magnitudesMagnetometro);
 
 
   const campos=[
-       /* 
-        26.039918537018742,
-        7.309796699430188,
-        20.378162104442573,
-        2.7824758875712914,
-        11.131079696122551,
-        3.8913614045630966,
-        1.5929268156092316,
-        7.086617599915782,
-        10.790400250203442,*/
-
+  
 
           acc_max,
           acc_kurtosis,
@@ -136,16 +103,7 @@ const mag_max = Math.max(...magnitudesMagnetometro);
 
     return campos;
 
-    /* return [acc_max,
-      acc_kurtosis,
-      acc_skewness,
-      gyro_max,
-      gyro_kurtosis,
-      gyro_skewness,
-      linMaxValue,
-      postLinMaxValue,
-      postGyroMaxValue,
-      ];*/
+
   }
  calcularMagnitud(vector) {
 return Math.sqrt(vector.x ** 2 + vector.y **2 + vector.z ** 2);
@@ -161,7 +119,7 @@ const n = datos.length;
 const media = datos.reduce((sum, val) => sum + val, 0) / n;
 const sumatoria4 = datos.reduce((sum, val) => sum + Math.pow(val - media, 4), 0);
 const desviacionEstandar = Math.sqrt(sumatoria4 / n);
-const curtosis = sumatoria4 / (n * Math.pow(desviacionEstandar, 4));
+const curtosis = sumatoria4 / (n * Math.pow(desviacionEstandar, 4))-3;
 
 return curtosis;
 }
@@ -178,28 +136,32 @@ return asimetria;
 }
 
 
-// Función para calcular lin_max
- calcularLinMax(dataset) {
+ calcularLinMax(datos) {
+  const gravedad = 9.81; // Valor aproximado de la gravedad en m/s²
 
-let lin_max = 0; // Inicializar en 0
+  let lin_max = 0; // Inicializar en 0
 
-for (const fila of dataset) {
-const acc_magnitud = this.calcularMagnitud({
-  x: fila.acc_x,
-  y: fila.acc_y,
-  z: fila.acc_z
-});
+  for (const fila of datos) {
+    const acc_magnitud = this.calcularMagnitud({
+      x: fila.acc_x,
+      y: fila.acc_y,
+      z: fila.acc_z
+    });
 
-// Para calcular lin_max (Máxima aceleración lineal en el 4to segundo)
-if (fila.timestamp >= 4 && fila.timestamp < 5) {
-  if (acc_magnitud > lin_max) {
-    lin_max = acc_magnitud;
+    // Excluir la gravedad restando el valor estimado de gravedad
+    const acc_excluyendo_gravedad = Math.max(0, acc_magnitud - gravedad);
+
+    // Para calcular lin_max (Máxima aceleración lineal en el 4to segundo) excluyendo la gravedad
+    if (fila.timestamp >= 4 && fila.timestamp < 5) {
+      if (acc_excluyendo_gravedad > lin_max) {
+        lin_max = acc_excluyendo_gravedad;
+      }
+    }
   }
-}
+
+  return lin_max;
 }
 
-return lin_max;
-}
 
 // Función para calcular post_lin_max
  calcularPostLinMax(datos) {
@@ -284,16 +246,15 @@ module.exports = Calculador;
 
 
 const datos = [
-    { timestamp: 1, acc_x: 0.5, acc_y: 0.2, acc_z: 0.9, gyro_x: 0.1, gyro_y: 0.5, gyro_z: 0.9 , mag_x: 0.1, mag_y: 0.5, mag_z: 0.9 },
-    { timestamp: 2, acc_x: 0.5, acc_y: 0.2, acc_z: 0.9, gyro_x: 0.1, gyro_y: 0.5, gyro_z: 0.9 , mag_x: 0.1, mag_y: 0.5, mag_z: 0.9 },
-    { timestamp: 3, acc_x: 0.5, acc_y: 0.2, acc_z: 0.9, gyro_x: 0.1, gyro_y: 0.5, gyro_z: 0.9 , mag_x: 0.1, mag_y: 0.5, mag_z: 0.9 },
-    { timestamp: 4, acc_x: 0.5, acc_y: 0.2, acc_z: 0.9, gyro_x: 0.1, gyro_y: 0.5, gyro_z: 0.9 , mag_x: 0.1, mag_y: 0.5, mag_z: 0.9 },
-    { timestamp: 5, acc_x: 0.5, acc_y: 0.2, acc_z: 0.9, gyro_x: 0.1, gyro_y: 0.5, gyro_z: 0.9, mag_x: 0.1, mag_y: 0.5, mag_z: 0.9 },
-    { timestamp: 6, acc_x: 0.5, acc_y: 0.2, acc_z: 0.9, gyro_x: 0.1, gyro_y: 0.5, gyro_z: 0.9 , mag_x: 0.1, mag_y: 0.5, mag_z: 0.9 },
+    { timestamp: 1, acc_x: 0.2, acc_y: 1, acc_z: 1, gyro_x: 0.1, gyro_y: 0.5, gyro_z: 0.9 , mag_x: 0.1, mag_y: 0.5, mag_z: 0.9 },
+    { timestamp: 2, acc_x: 0.3, acc_y: 1, acc_z: 1, gyro_x: 0.1, gyro_y: 0.5, gyro_z: 0.9 , mag_x: 0.1, mag_y: 0.5, mag_z: 0.9 },
+    { timestamp: 3, acc_x: 0.2, acc_y: 1, acc_z: 1, gyro_x: 0.1, gyro_y: 0.5, gyro_z: 0.9 , mag_x: 0.1, mag_y: 0.5, mag_z: 0.9 },
+    { timestamp: 4, acc_x: 0.2, acc_y: 1, acc_z: 1, gyro_x: 0.1, gyro_y: 0.5, gyro_z: 0.9 , mag_x: 0.1, mag_y: 0.5, mag_z: 0.9 },
+    { timestamp: 5, acc_x: 0.2, acc_y: 1, acc_z: 1, gyro_x: 0.1, gyro_y: 0.5, gyro_z: 0.9, mag_x: 0.1, mag_y: 0.5, mag_z: 0.9 },
+    { timestamp: 6, acc_x: 0.2, acc_y: 1, acc_z: 1, gyro_x: 0.1, gyro_y: 0.5, gyro_z: 0.9 , mag_x: 0.1, mag_y: 0.5, mag_z: 0.9 },
    
   ];
 
-  // Crear una instancia de la clase AlgoritmoDeCaidas
   const algoritmo = new Calculador();
   
 

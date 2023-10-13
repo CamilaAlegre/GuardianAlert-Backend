@@ -1,39 +1,18 @@
 
 class Calculador{
-    // Supongamos que tienes un arreglo de objetos JSON llamado 'datos' con los campos relevantes.
+   calcularCaracteristicas(datosentrada) {
 
+const datos=datosentrada.filter(dato => dato.timestamp >= 0 && dato.timestamp <7);
+const ventanaDatosCuartoSegundo =datos.filter(dato => dato.timestamp >= 4 && dato.timestamp <5);
 
-
-      // Función para calcular las características
-   calcularCaracteristicas(datos) {
-  /*  const ventanaDatosCuartoSegundo = datos.slice(3, 4); // Cuarto segundo de la ventana
-
-    const magnitudesAceleracion = ventanaDatosCuartoSegundo.map(dato => this.calcularMagnitud({ x: dato.acc_x, y: dato.acc_y, z: dato.acc_z }));
-    const magnitudesGiroscopio = ventanaDatosCuartoSegundo.map(dato => this.calcularMagnitud({ x: dato.gyro_x, y: dato.gyro_y, z: dato.gyro_z }));
-//console.log(magnitudesAceleracion);
-    const acc_max = Math.max(...magnitudesAceleracion);
-
-    console.log(acc_max);
-    const acc_kurtosis = this.calcularCurtosis(magnitudesAceleracion);
-    const acc_skewness = this.calcularAsimetria(magnitudesAceleracion);
-
-    const gyro_max = Math.max(...magnitudesGiroscopio);
-    const gyro_kurtosis = this.calcularCurtosis(magnitudesGiroscopio);
-    const gyro_skewness = this.calcularAsimetria(magnitudesGiroscopio);
-
-    const linMaxValue = this.calcularLinMax(datos);
-    const postLinMaxValue = this.calcularPostLinMax(datos);
-    const postGyroMaxValue = this.calcularPostGyroMax(datos);
-*/
-
-
-const ventanaDatosCuartoSegundo = datos.slice(3, 4); // Cuarto segundo de la ventana (tercera fila)
+console.log(ventanaDatosCuartoSegundo);
 
 const magnitudesAceleracion = [];
 for (const dato of ventanaDatosCuartoSegundo) {
   const magnitud = this.calcularMagnitud({ x: dato.acc_x, y: dato.acc_y, z: dato.acc_z });
   magnitudesAceleracion.push(magnitud);
 }
+
 
 
 
@@ -79,17 +58,6 @@ const postLinMaxValue = this.calcularPostLinMax(datos);
 const postGyroMaxValue = this.calcularPostGyroMax(datos);
 
   const campos=[
-       /* 
-        26.039918537018742,
-        7.309796699430188,
-        20.378162104442573,
-        2.7824758875712914,
-        11.131079696122551,
-        3.8913614045630966,
-        1.5929268156092316,
-        7.086617599915782,
-        10.790400250203442,*/
-
 
           acc_max,
           acc_kurtosis,
@@ -106,16 +74,7 @@ const postGyroMaxValue = this.calcularPostGyroMax(datos);
 
     return campos;
 
-    /* return [acc_max,
-      acc_kurtosis,
-      acc_skewness,
-      gyro_max,
-      gyro_kurtosis,
-      gyro_skewness,
-      linMaxValue,
-      postLinMaxValue,
-      postGyroMaxValue,
-      ];*/
+ 
   }
  calcularMagnitud(vector) {
 return Math.sqrt(vector.x ** 2 + vector.y **2 + vector.z ** 2);
@@ -126,13 +85,12 @@ return Math.sqrt(vector.x ** 2 + vector.y **2 + vector.z ** 2);
 
 
 
-console.log(datos);
 const n = datos.length;
 
 const media = datos.reduce((sum, val) => sum + val, 0) / n;
 const sumatoria4 = datos.reduce((sum, val) => sum + Math.pow(val - media, 4), 0);
 const desviacionEstandar = Math.sqrt(sumatoria4 / n);
-const curtosis = sumatoria4 / (n * Math.pow(desviacionEstandar, 4));
+const curtosis = sumatoria4 / (n * Math.pow(desviacionEstandar, 4))-3;
 
 return curtosis;
 }
@@ -149,28 +107,32 @@ return asimetria;
 }
 
 
-// Función para calcular lin_max
- calcularLinMax(dataset) {
+ calcularLinMax(datos) {
+  const gravedad = 9.81; // Valor aproximado de la gravedad en m/s²
 
-let lin_max = 0; // Inicializar en 0
+  let lin_max = 0; // Inicializar en 0
 
-for (const fila of dataset) {
-const acc_magnitud = this.calcularMagnitud({
-  x: fila.acc_x,
-  y: fila.acc_y,
-  z: fila.acc_z
-});
+  for (const fila of datos) {
+    const acc_magnitud = this.calcularMagnitud({
+      x: fila.acc_x,
+      y: fila.acc_y,
+      z: fila.acc_z
+    });
 
-// Para calcular lin_max (Máxima aceleración lineal en el 4to segundo)
-if (fila.timestamp >= 4 && fila.timestamp < 5) {
-  if (acc_magnitud > lin_max) {
-    lin_max = acc_magnitud;
+    // Excluir la gravedad restando el valor estimado de gravedad
+    const acc_excluyendo_gravedad = Math.max(0, acc_magnitud - gravedad);
+
+    // Para calcular lin_max (Máxima aceleración lineal en el 4to segundo) excluyendo la gravedad
+    if (fila.timestamp >= 4 && fila.timestamp < 5) {
+      if (acc_excluyendo_gravedad > lin_max) {
+        lin_max = acc_excluyendo_gravedad;
+      }
+    }
   }
-}
+
+  return lin_max;
 }
 
-return lin_max;
-}
 
 // Función para calcular post_lin_max
  calcularPostLinMax(datos) {
@@ -224,22 +186,43 @@ return post_gyro_max;
 
 
 module.exports = Calculador;
-/*
+
 
 const datos = [
-    { timestamp: 1, acc_x: 0.5, acc_y: 0.2, acc_z: 0.9, gyro_x: 0.5, gyro_y: 0.2, gyro_z: 0.9 },
-    { timestamp: 2, acc_x: 0.5, acc_y: 0.2, acc_z: 0.9, gyro_x: 0.5, gyro_y: 0.2, gyro_z: 0.9 },
-    { timestamp: 3, acc_x: 0.5, acc_y: 0.2, acc_z: 0.9, gyro_x: 0.5, gyro_y: 0.2, gyro_z: 0.9 },
-    { timestamp: 4, acc_x: 0.5, acc_y: 0.2, acc_z: 0.9, gyro_x: 0.5, gyro_y: 0.2, gyro_z: 0.9 },
-    { timestamp: 5, acc_x: 0.5, acc_y: 0.2, acc_z: 0.9, gyro_x: 0.5, gyro_y: 0.2, gyro_z: 0.9 },
-    { timestamp: 6, acc_x: 0.5, acc_y: 0.2, acc_z: 0.9, gyro_x: 0.5, gyro_y: 0.2, gyro_z: 0.9 },
-   
+  { timestamp: 1, acc_x: 1, acc_y: 1, acc_z: 1, gyro_x: 2.7824758875712914, gyro_y: 2.131079696122551, gyro_z: 2.8913614045630966 },
+  { timestamp: 2, acc_x: 1, acc_y: 2,acc_z: 1,  gyro_x: 4.131079696122551, gyro_y: 6.8913614045630966, gyro_z: 5.086617599915782 },
+  { timestamp: 2.1, acc_x: 0.2, acc_y: 0.3, acc_z: 0.8,  gyro_x: 6.309796699430188, gyro_y:5.790400250203442, gyro_z: 5.86617599915782 },
+  { timestamp: 2.2, acc_x: 0.1,  acc_y: 1, acc_z: 1,  gyro_x: 6.309796699430188, gyro_y:5.790400250203442, gyro_z: 5.86617599915782 },
+  { timestamp: 2.4, acc_x: 0.2, acc_y: 1, acc_z: 0.8,  gyro_x: 6.309796699430188, gyro_y:5.790400250203442, gyro_z: 5.86617599915782 },
+  { timestamp: 2.5, acc_x: 0.8,  acc_y: 1, acc_z: 1,  gyro_x: 6.309796699430188, gyro_y:5.790400250203442, gyro_z: 5.86617599915782 },
+  { timestamp: 2.6, acc_x: 0.1, acc_y: 1, acc_z: 1,  gyro_x: 6.309796699430188, gyro_y:5.790400250203442, gyro_z: 5.86617599915782 },
+  { timestamp: 2.7, acc_x: 1,  acc_y: 1, acc_z: 1,  gyro_x: 6.309796699430188, gyro_y:5.790400250203442, gyro_z: 5.86617599915782 },
+  { timestamp: 2.8, acc_x: 2, acc_y: 1, acc_z: 1,  gyro_x: 6.309796699430188, gyro_y:5.790400250203442, gyro_z: 5.86617599915782 },
+   { timestamp: 3, acc_x: 2, acc_y: 2, acc_z: 1,  gyro_x: 5.309796699430188, gyro_y: 4.5929268156092316, gyro_z: 5.790400250203442 },
+  { timestamp: 4, acc_x: 1, acc_y: 2, acc_z: 1, gyro_x: 6.309796699430188, gyro_y:5.790400250203442, gyro_z: 5.86617599915782 },
+  { timestamp: 4.1, acc_x: 2, acc_y: 1, acc_z: 1,  gyro_x: 6.309796699430188, gyro_y:5.790400250203442, gyro_z: 5.86617599915782 },
+  { timestamp: 4.2, acc_x: 1,  acc_y: 1, acc_z: 1,  gyro_x: 6.309796699430188, gyro_y:5.790400250203442, gyro_z: 5.86617599915782 },
+  { timestamp: 5, acc_x: 2,  acc_y: 1, acc_z: 1,  gyro_x: 7.790400250203442, gyro_y: 4.309796699430188, gyro_z: 4.086617599915782 },
+  { timestamp: 6, acc_x: 1, acc_y: 1, acc_z: 1,  gyro_x: 6.8913614045630966, gyro_y: 3.086617599915782, gyro_z: 4.790400250203442 },
+  { timestamp: 6.1, acc_x: 2, acc_y: 1, acc_z: 1,  gyro_x: 6.309796699430188, gyro_y:5.790400250203442, gyro_z: 5.86617599915782 },
+  { timestamp: 6.2, acc_x: 1,  acc_y: 1, acc_z: 1,  gyro_x: 6.309796699430188, gyro_y:5.790400250203442, gyro_z: 5.86617599915782 },
+  { timestamp: 6.4, acc_x: 2, acc_y: 1, acc_z: 1,  gyro_x: 6.309796699430188, gyro_y:5.790400250203442, gyro_z: 5.86617599915782 },
+  { timestamp: 6.5, acc_x: 1,  acc_y: 1, acc_z: 1,  gyro_x: 6.309796699430188, gyro_y:5.790400250203442, gyro_z: 5.86617599915782 },
+  { timestamp: 6.6, acc_x: 2, acc_y: 1, acc_z: 1,  gyro_x: 6.309796699430188, gyro_y:5.790400250203442, gyro_z: 5.86617599915782 },
+  { timestamp: 6.7, acc_x: 1,  acc_y: 1, acc_z: 1,  gyro_x: 6.309796699430188, gyro_y:5.790400250203442, gyro_z: 5.86617599915782 },
+  { timestamp: 6.8, acc_x: 2, acc_y: 1, acc_z: 1,  gyro_x: 6.309796699430188, gyro_y:5.790400250203442, gyro_z: 5.86617599915782 },
+  { timestamp: 6.9, acc_x: 1,  acc_y: 1.2, acc_z: 1,  gyro_x: 6.309796699430188, gyro_y:5.790400250203442, gyro_z: 5.86617599915782 },
+  { timestamp: 6.10, acc_x: 0.2, acc_y: 1, acc_z: 1,  gyro_x: 6.309796699430188, gyro_y:5.790400250203442, gyro_z: 5.86617599915782 },
+  { timestamp: 6.11, acc_x: 0.2,  acc_y: 1.2, acc_z: 1,  gyro_x: 6.309796699430188, gyro_y:5.790400250203442, gyro_z: 5.86617599915782 },
+  { timestamp: 6.12, acc_x: 0.2, acc_y: 1, acc_z: 1,  gyro_x: 6.309796699430188, gyro_y:5.790400250203442, gyro_z: 5.86617599915782 },
+  { timestamp: 6.13, acc_x: 1,  acc_y: 1, acc_z: 1,  gyro_x: 6.309796699430188, gyro_y:5.790400250203442, gyro_z: 5.86617599915782 },
   ];
+
+
 
   const algoritmo = new Calculador();
   
 
   const caracteristicas = algoritmo.calcularCaracteristicas(datos);
-  console.log(caracteristicas);
+ console.log(caracteristicas);
 
-*/
