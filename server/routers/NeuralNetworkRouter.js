@@ -2,13 +2,10 @@ const express = require('express');
 const app = express();
 
 app.use(express.json());
-// Importa la clase NeuralNetwork
 
 app.get('/train', async(req, res) => {
 
   const datosCodificados = req.query.data;
-
-  // Decodifica la cadena y analízala de nuevo como una matriz
   const datosJSON = decodeURIComponent(datosCodificados);
   const datos = JSON.parse(datosJSON);
 
@@ -34,7 +31,7 @@ app.get('/train', async(req, res) => {
   }
 
   const campos = obtenerCampos();
-  /*
+  
   const inputForPrediction = [
     campos[0],
     campos[1],
@@ -46,7 +43,7 @@ app.get('/train', async(req, res) => {
     campos[6],
     campos[7],
     campos[8],
-  ];*/
+  ];/*
   const inputForPrediction = [
     26.039918537018742,
     7.309796699430188,
@@ -59,9 +56,8 @@ app.get('/train', async(req, res) => {
     7.086617599915782,
     10.790400250203442,
   ];
-  
+  */
   try {
-    // Cargar los datos
   const prediction= await tensor.loadCSVData('../../Train.csv', trainingOptions, inputForPrediction);
   
   res.send(`Predicción: ${JSON.stringify(prediction.dataSync())}`);
@@ -70,25 +66,8 @@ app.get('/train', async(req, res) => {
     console.error('Error durante la predicción:', error);
   }
   });
-/*
-// Definir una ruta para cargar datos CSV y entrenar la red neuronal
-app.get('/trainp', (req, res) => {
-  const trainingOptions = {
-    rate: 0.1,
-    iterations: 5000,
-    error: 0.005,
-  };
-
-  const datos = req.body.datos; 
-  const campos = req.body.campos; 
-
-  neuralNetwork.loadCSVData('./Train.csv', trainingOptions, campos);
-
-  res.json({ message: 'Entrenamiento iniciado.' });
-});
 
 
-*/
 const port =process.env.port || 80;
 app.listen(port, ()=> console.log(`Escuchando en puerto ${port}...`));
 

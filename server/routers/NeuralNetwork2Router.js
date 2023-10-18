@@ -1,34 +1,60 @@
 const express = require('express');
-const router = express.Router();
+const app = express();
 
-// Importa la clase NeuralNetwork
-const NeuralNetwork = require('./NeuralNetwork2');
+app.use(express.json());
 
-// Crea una instancia de la clase NeuralNetwork
-const neuralNetwork = new NeuralNetwork();
+app.get('/impactos', async(req, res) => {
 
-// Definir una ruta para cargar datos CSV y entrenar la red neuronal
-router.post('/trainimpact', (req, res) => {
+  const datosCodificados = req.query.data;
+
+  const datosJSON = decodeURIComponent(datosCodificados);
+  const datos = JSON.parse(datosJSON);
+
+  
+  const AlgoTensorImpactos = require('../../AlgoTensorImpacto');
+
+  const tensor = new AlgoTensorImpactos();
+
+
   const trainingOptions = {
     rate: 0.1,
     iterations: 5000,
     error: 0.005,
   };
 
-  const datos = req.body.datos; 
-  const campos = req.body.campos; 
+  const Calculador = require('../../Calculador');
+  const algoritmo = new Calculador();
 
-  neuralNetwork.loadCSVData('./TrainImpact.csv', trainingOptions, campos);
+  function obtenerCampos() {
+    const campos = algoritmo.calcularCaracteristicas(datos);
 
-  res.json({ message: 'Entrenamiento iniciado.' });
-});
+    return campos;
+  }
 
-router.post('/predictimpact', (req, res) => {
-  const inputForPrediction = req.body.inputForPrediction;
+  const campos = obtenerCampos();
+  
+  const inputForPrediction = [
+    campos[0],
+    campos[1],
+    campos[2],
+    campos[3],
+    tensor.activityToNumeric('SDL'),
+    campos[4],
+    campos[5],
+    campos[6],
+    campos[7],
+    campos[8],
+  ];
+  try {
+    // Cargar los datos
+  const prediction= await tensor.loadCSVData('../../DatasetImpactos.csv', trainingOptions, inputForPrediction);
+  
+  res.send(`Predicción: ${JSON.stringify(prediction.dataSync())}`);
+  
+  } catch (error) {
+    console.error('Error durante la predicción:', error);
+  }
+  });
 
-  //const prediction = neuralNetwork.predict(inputForPrediction);
-
-  res.json({ prediction });
-});
-
-module.exports = router;
+const port =process.env.port || 80;
+app.listen(port, ()=> console.log(`Escuchando en puerto ${port}...`));
