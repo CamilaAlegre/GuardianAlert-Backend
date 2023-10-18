@@ -6,17 +6,14 @@ app.use(express.json());
 
 app.get('/train', async(req, res) => {
 
+  const datosCodificados = req.query.data;
+
+  // Decodifica la cadena y analízala de nuevo como una matriz
+  const datosJSON = decodeURIComponent(datosCodificados);
+  const datos = JSON.parse(datosJSON);
 
 
-  const datos = [
-    { timestamp: 1, acc_x: 0.5, acc_y: 0.2, acc_z: 0.9, gyro_x: 0.1, gyro_y: 0.3, gyro_z: 0.2 },
-    { timestamp: 2, acc_x: 0.5, acc_y: 0.2, acc_z: 0.9, gyro_x: 0.1, gyro_y: 0.3, gyro_z: 0.2 },
-    { timestamp: 3, acc_x: 0.5, acc_y: 0.2, acc_z: 0.9, gyro_x: 0.1, gyro_y: 0.3, gyro_z: 0.2 },
-    { timestamp: 4, acc_x: 0.5, acc_y: 0.2, acc_z: 0.9, gyro_x: 0.1, gyro_y: 0.3, gyro_z: 0.2 },
-    { timestamp: 5, acc_x: 0.5, acc_y: 0.2, acc_z: 0.9, gyro_x: 0.1, gyro_y: 0.3, gyro_z: 0.2 },
-    { timestamp: 6, acc_x: 0.5, acc_y: 0.2, acc_z: 0.9, gyro_x: 0.1, gyro_y: 0.3, gyro_z: 0.2 },
-    // Más datos aquí
-  ];
+ 
   const AlgoTensor = require('../../AlgoTensor');
 
   const tensor = new AlgoTensor();
@@ -95,6 +92,19 @@ app.get('/trainp', (req, res) => {
 const port =process.env.port || 80;
 app.listen(port, ()=> console.log(`Escuchando en puerto ${port}...`));
 
+/*
+const datos = [
+  { timestamp: 1, acc_x: 0.5, acc_y: 0.2, acc_z: 0.9, gyro_x: 0.1, gyro_y: 0.3, gyro_z: 0.2 },
+  { timestamp: 2, acc_x: 0.5, acc_y: 0.2, acc_z: 0.9, gyro_x: 0.1, gyro_y: 0.3, gyro_z: 0.2 },
+  { timestamp: 3, acc_x: 0.5, acc_y: 0.2, acc_z: 0.9, gyro_x: 0.1, gyro_y: 0.3, gyro_z: 0.2 },
+  { timestamp: 4, acc_x: 0.5, acc_y: 0.2, acc_z: 0.9, gyro_x: 0.1, gyro_y: 0.3, gyro_z: 0.2 },
+  { timestamp: 5, acc_x: 0.5, acc_y: 0.2, acc_z: 0.9, gyro_x: 0.1, gyro_y: 0.3, gyro_z: 0.2 },
+  { timestamp: 6, acc_x: 0.5, acc_y: 0.2, acc_z: 0.9, gyro_x: 0.1, gyro_y: 0.3, gyro_z: 0.2 },
+ 
+];
 
+// Convierte la matriz en una cadena JSON y luego codifícala
+const datosJSON = JSON.stringify(datos);
+const datosCodificados = encodeURIComponent(datosJSON);
 
-
+*/
