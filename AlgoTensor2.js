@@ -9,10 +9,12 @@ class NeuralNetwork {
     this.model = tf.sequential();
 
     // Agregar una capa de entrada con 10 unidades (ajusta según tus datos)
-    this.model.add(tf.layers.dense({ units: 10, inputShape: [14], activation: 'relu' }));
+    this.model.add(tf.layers.dense({ units: 9, inputShape: [9], activation: 'relu' }));
 
     // Agregar una capa de salida con 1 unidad y función de activación sigmoide
-    this.model.add(tf.layers.dense({ units: 1, outputShape: [1],activation: 'sigmoid' }));
+    this.model.add(tf.layers.dense({ units: 1, outputShape: 1,activation: 'sigmoid' }));
+
+    this.model.add(tf.layers.dense({ units: 1,outputShape: 1, activation: 'linear' }));
 
     // Compilar el modelo
     this.model.compile({ optimizer: 'adam', loss: 'binaryCrossentropy', metrics: ['accuracy'] });
@@ -22,13 +24,19 @@ class NeuralNetwork {
 
     // Definir el mapeo de actividades
     this.activityMap = {
-      'CA': 0,
-      'TRO': 1,
-      'SAL': 2,
-      'SEN': 3,
-      'CHP': 4,
-      'CHO': 5,
-      'COB': 6,
+      'ETS': 0,
+      'WAL': 1,
+      'JOG': 2,
+      'JUM': 3,
+      'STU': 4,
+      'STN': 5,
+      'SCH': 6,
+      'CSI': 7,
+      'CSO': 8,
+      'FOL': 9,
+      'FKL': 10,
+      'SDL': 11,
+      'BSC': 12,
     };
   }
 
@@ -52,7 +60,8 @@ class NeuralNetwork {
             parseFloat(values[3]), // 'acc_kurtosis'
             parseFloat(values[4]), // 'gyro_kurtosis'
 
-            parseFloat(values[5]), // 'gyro_kurtosis'
+
+
             parseFloat(values[6]), // 'gyro_kurtosis'
             parseFloat(values[7]), // 'gyro_kurtosis'
 
@@ -62,17 +71,12 @@ class NeuralNetwork {
 
             parseFloat(values[10]), // 'gyro_kurtosis'
 
-            parseFloat(values[11]), // 'gyro_kurtosis'
-            
-            parseFloat(values[12]), // 'gyro_kurtosis'            
-            parseFloat(values[13]), // 'gyro_kurtosis'
-            
-            this.activityToNumeric(values[14]),
 
           ];
 
-          const outputData = [parseInt(values[15])]; // La columna 'fall' se utiliza como salida
+          const outputData = [parseInt(values[11])]; // La columna 'fall' se utiliza como salida
 
+          outputData.push(this.activityToNumeric(values[5]));
           dataset2.push({ input: inputData, output: outputData });
 
         }
@@ -85,7 +89,7 @@ class NeuralNetwork {
 
 
       // Llama a trainNeuralNetwork después de cargar los datos
-      return this.trainNeuralNetwork(options, this.dataset,input);
+      this.trainNeuralNetwork(options, this.dataset,input);
     } catch (error) {
       console.error('Error al cargar datos:', error);
     }
@@ -96,22 +100,36 @@ class NeuralNetwork {
 
     const { iterations } = options;
     const inputs = tf.tensor(dataset.map(item => item.input));
-    const outputs = tf.tensor(dataset.map(item => item.output));
-
-     this.model.fit(inputs, outputs, {
-      epochs: 1400,
-      batchSize: 1400,
-      shuffle: true,
-      validationSplit: 0.1,
-      verbose: 0, // Configura verbose en 0 para evitar la salida en pantalla
-   }).then(info => {
-    console.log('Entrenamiento completado.');
-
+    const outputData1 = tf.tensor(dataset.map(item => [item.output[0]])); // Primera salida
+    const outputData2 = tf.tensor(dataset.map(item => [item.output[1]])); // Segunda salida
     
-  const prediction = this.predict(inputForPrediction);
-  return prediction;
-  });
-  
+    // Entrena la red neuronal con datos de salida 1
+    this.model.fit(inputs, outputData1, {
+    epochs: 1400,
+    batchSize: 1400,
+    shuffle: true,
+    validationSplit: 0.1,
+    verbose: 0,
+    }).then(info => {
+    console.log('Entrenamiento completado para la primera salida.');
+    // Realiza la predicción para la primera salida
+    const prediction1 = this.predict(inputForPrediction);
+    console.log(`Predicción para la primera salida: ${JSON.stringify(prediction1.dataSync())}`);
+    
+    // Entrena la red neuronal con datos de salida 2
+    this.model.fit(inputs, outputData2, {
+    epochs: 1400,
+    batchSize: 1400,
+    shuffle: true,
+    validationSplit: 0.1,
+    verbose: 0,
+    }).then(info => {
+    console.log('Entrenamiento completado para la segunda salida.');
+    // Realiza la predicción para la segunda salida
+    const prediction2 = this.predict(inputForPrediction);
+    console.log(`Predicción para la segunda salida: ${JSON.stringify(prediction2.dataSync())}`);
+    });
+    });
   }
   // Método para realizar predicciones
   predict(inputData) {
@@ -123,6 +141,7 @@ class NeuralNetwork {
 
     inputTensor.dispose();
 
+    console.log(prediction);
     return prediction;
   }
 
@@ -138,15 +157,14 @@ class NeuralNetwork {
 
 
 const datos = [
-    { timestamp: 1, acc_x: 0.5, acc_y: 0.2, acc_z: 0.9, gyro_x: 0.1, gyro_y: 0.5, gyro_z: 0.9 , mag_x: 0.1, mag_y: 0.5, mag_z: 0.9 },
-    { timestamp: 2, acc_x: 0.5, acc_y: 0.2, acc_z: 0.9, gyro_x: 0.1, gyro_y: 0.5, gyro_z: 0.9 , mag_x: 0.1, mag_y: 0.5, mag_z: 0.9 },
-    { timestamp: 3, acc_x: 0.5, acc_y: 0.2, acc_z: 0.9, gyro_x: 0.1, gyro_y: 0.5, gyro_z: 0.9 , mag_x: 0.1, mag_y: 0.5, mag_z: 0.9 },
-    { timestamp: 4, acc_x: 0.5, acc_y: 0.2, acc_z: 0.9, gyro_x: 0.1, gyro_y: 0.5, gyro_z: 0.9 , mag_x: 0.1, mag_y: 0.5, mag_z: 0.9 },
-    { timestamp: 5, acc_x: 0.5, acc_y: 0.2, acc_z: 0.9, gyro_x: 0.1, gyro_y: 0.5, gyro_z: 0.9, mag_x: 0.1, mag_y: 0.5, mag_z: 0.9 },
-    { timestamp: 6, acc_x: 0.5, acc_y: 0.2, acc_z: 0.9, gyro_x: 0.1, gyro_y: 0.5, gyro_z: 0.9 , mag_x: 0.1, mag_y: 0.5, mag_z: 0.9 },
-   
-  ];
-
+  { timestamp: 1, acc_x: 0.5, acc_y: 0.2, acc_z: 0.9, gyro_x: 0.1, gyro_y: 0.3, gyro_z: 0.2 },
+  { timestamp: 2, acc_x: 0.5, acc_y: 0.2, acc_z: 0.9, gyro_x: 0.1, gyro_y: 0.3, gyro_z: 0.2 },
+  { timestamp: 3, acc_x: 0.5, acc_y: 0.2, acc_z: 0.9, gyro_x: 0.1, gyro_y: 0.3, gyro_z: 0.2 },
+  { timestamp: 4, acc_x: 0.5, acc_y: 0.2, acc_z: 0.9, gyro_x: 0.1, gyro_y: 0.3, gyro_z: 0.2 },
+  { timestamp: 5, acc_x: 0.5, acc_y: 0.2, acc_z: 0.9, gyro_x: 0.1, gyro_y: 0.3, gyro_z: 0.2 },
+  { timestamp: 6, acc_x: 0.5, acc_y: 0.2, acc_z: 0.9, gyro_x: 0.1, gyro_y: 0.3, gyro_z: 0.2 },
+  // Más datos aquí
+];
 
 
 
@@ -162,8 +180,8 @@ function main() {
     error: 0.005,
   };
 
-  const Calculador2 = require('./Calculador2');
-  const algoritmo = new Calculador2();
+  const Calculador = require('./Calculador');
+  const algoritmo = new Calculador();
 
   function obtenerCampos() {
     const campos = algoritmo.calcularCaracteristicas(datos);
@@ -173,29 +191,21 @@ function main() {
 
   const campos = obtenerCampos();
   const inputForPrediction = [
-    campos[0],
-    campos[1],
-    campos[2],
-    campos[3],
-    campos[4],
-    campos[5],
-    campos[6],
-    campos[7],
-    campos[8],
-    campos[9],
-    campos[10],
-    campos[11],
-    campos[12],
-    neuralNetwork.activityToNumeric('SDL'),
+    26.039918537018742,
+    7.309796699430188,
+    20.378162104442573,
+    2.7824758875712914,
+    11.131079696122551,
+    3.8913614045630966,
+    1.5929268156092316,
+    7.086617599915782,
+    10.790400250203442,
   ];
   
   
 
-  
 
-
-  const prediction=neuralNetwork.loadCSVData('./TrainImpact.csv', trainingOptions,inputForPrediction);
-  console.log(`Predicción: ${JSON.stringify(prediction.dataSync()  )}`); 
+  neuralNetwork.loadCSVData('./Train.csv', trainingOptions,inputForPrediction);
 }
 
 

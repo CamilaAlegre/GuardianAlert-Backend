@@ -187,7 +187,7 @@ return post_gyro_max;
 
 module.exports = Calculador;
 
-
+/*
 const datos = [
   { timestamp: 1, acc_x: 1, acc_y: 1, acc_z: 1, gyro_x: 2.7824758875712914, gyro_y: 2.131079696122551, gyro_z: 2.8913614045630966 },
   { timestamp: 2, acc_x: 1, acc_y: 2,acc_z: 1,  gyro_x: 4.131079696122551, gyro_y: 6.8913614045630966, gyro_z: 5.086617599915782 },
@@ -226,3 +226,4 @@ const datos = [
   const caracteristicas = algoritmo.calcularCaracteristicas(datos);
  console.log(caracteristicas);
 
+*/

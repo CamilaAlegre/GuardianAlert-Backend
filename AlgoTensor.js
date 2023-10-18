@@ -3,7 +3,7 @@ const { Console } = require('console');
 const fs = require('fs');
 //const csvParserSync = require('csv-parser');
 
-class NeuralNetwork {
+class AlgoTensor {
   constructor() {
     // Crear el modelo secuencial de TensorFlow.js
     this.model = tf.sequential();
@@ -39,7 +39,7 @@ class NeuralNetwork {
   }
 
   // Define tu función loadCSVData
-  loadCSVData(csvFilePath, options,input) {
+   async loadCSVData(csvFilePath, options,input) {
     const dataset2 = []; // Crea un array temporal para almacenar los datos
 
     try {
@@ -87,46 +87,49 @@ class NeuralNetwork {
 
 
       // Llama a trainNeuralNetwork después de cargar los datos
-      this.trainNeuralNetwork(options, this.dataset,input);
+     return await this.trainNeuralNetwork(options, this.dataset,input);
     } catch (error) {
       console.error('Error al cargar datos:', error);
     }
   }
 
   // Método para entrenar la red neuronal
-  trainNeuralNetwork(options, dataset,inputForPrediction) {
+ async trainNeuralNetwork(options, dataset,inputForPrediction) {
 
     const { iterations } = options;
-    const inputs = tf.tensor(dataset.map(item => item.input));
-    const outputs = tf.tensor(dataset.map(item => item.output));
+    const inputs =  tf.tensor(dataset.map(item => item.input));
+    const outputs =  tf.tensor(dataset.map(item => item.output));
 
-     this.model.fit(inputs, outputs, {
+    await this.model.fit(inputs, outputs, {
       epochs: 1400,
       batchSize: 1400,
       shuffle: true,
       validationSplit: 0.1,
       verbose: 0, // Configura verbose en 0 para evitar la salida en pantalla
-   }).then(info => {
-    console.log('Entrenamiento completado.');
+   });
+   
+   console.log('Entrenamiento completado.');
 
     
-  const prediction = this.predict(inputForPrediction);
-  console.log(`Predicción: ${JSON.stringify(prediction.dataSync()  )}`); 
-  });
+  const prediction = await this.predict(inputForPrediction);
+  return prediction;
+  
   
   }
   // Método para realizar predicciones
-  predict(inputData) {
+ async predict(inputData) {
 
 
     console.log(this.dataset);
     const inputTensor = tf.tensor([inputData]);
-    const prediction = this.model.predict(inputTensor);
+    const prediction =  this.model.predict(inputTensor);
+    console.log('Predicción completada.');
 
     inputTensor.dispose();
 
-    console.log(prediction);
     return prediction;
+  
+
   }
 
   // Método para mapear las etiquetas de actividad a valores numéricos
@@ -151,12 +154,11 @@ const datos = [
 ];
 
 
-
-
-
+module.exports = AlgoTensor;
+/*
 function main() {
   // Ejemplo de uso:
-  const neuralNetwork = new NeuralNetwork();
+  const tensor = new AlgoTensor();
 
   const trainingOptions = {
     rate: 0.1,
@@ -174,12 +176,14 @@ function main() {
   }
 
   const campos = obtenerCampos();
+
+  
   const inputForPrediction = [
     campos[0],
     campos[1],
     campos[2],
     campos[3],
-    neuralNetwork.activityToNumeric('SDL'),
+    tensor.activityToNumeric('SDL'),
     campos[4],
     campos[5],
     campos[6],
@@ -187,11 +191,22 @@ function main() {
     campos[8],
   ];
   
+
+
+
+  try {
+    // Cargar los datos
+   tensor.loadCSVData('./Train.csv', trainingOptions, inputForPrediction).then(prediction => {
   
+  console.log(`Predicción: ${JSON.stringify(prediction.dataSync()  )}`); 
+    
+  });
+  
+  
+  } catch (error) {
+    console.error('Error durante la predicción:', error);
+  }
+  //
 
-
-  neuralNetwork.loadCSVData('./Train.csv', trainingOptions,inputForPrediction);
 }
-
-
-main();
+main();*/
