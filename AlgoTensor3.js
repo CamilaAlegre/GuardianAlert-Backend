@@ -3,13 +3,13 @@ const { Console } = require('console');
 const fs = require('fs');
 //const csvParserSync = require('csv-parser');
 
-class AlgoTensor {
+class AlgoTensor3 {
   constructor() {
     // Crear el modelo secuencial de TensorFlow.js
     this.model = tf.sequential();
 
     // Agregar una capa de entrada con 10 unidades (ajusta según tus datos)
-    this.model.add(tf.layers.dense({ units: 10, inputShape: [10], activation: 'relu' }));
+    this.model.add(tf.layers.dense({ units: 10, inputShape: [9], activation: 'relu' }));
 
     // Agregar una capa de salida con 1 unidad y función de activación sigmoide
     this.model.add(tf.layers.dense({ units: 1, outputShape: [1],activation: 'sigmoid' }));
@@ -59,7 +59,7 @@ class AlgoTensor {
             parseFloat(values[4]), // 'gyro_kurtosis'
 
 
-            this.activityToNumeric(values[5]),
+       //     this.activityToNumeric(values[5]),
 
             parseFloat(values[6]), // 'gyro_kurtosis'
             parseFloat(values[7]), // 'gyro_kurtosis'
@@ -100,12 +100,19 @@ class AlgoTensor {
     const inputs =  tf.tensor(dataset.map(item => item.input));
     const outputs =  tf.tensor(dataset.map(item => item.output));
 
-    await this.model.fit(inputs, outputs, {
+    await this.model.fit(inputs, outputs, {/*
       epochs: 1400,
       batchSize: 1400,
       shuffle: true,
       validationSplit: 0.1,
-      verbose: 0, // Configura verbose en 0 para evitar la salida en pantalla
+      verbose: 0, // Configura verbose en 0 para evitar la salida en pantalla*/
+      epochs: 200,  // Ajusta el número de épocas según la convergencia.
+      batchSize: 32,  // Utiliza un tamaño de lote moderado.
+      error: 0.005,
+      shuffle: true,
+      verbose: 0,
+      rate:0.1,
+      validationSplit: 0.2,
    });
    
    console.log('Entrenamiento completado.');
@@ -142,18 +149,9 @@ class AlgoTensor {
 
 
 
-const datos = [
-  { timestamp: 1, acc_x: 0.5, acc_y: 0.2, acc_z: 0.9, gyro_x: 0.1, gyro_y: 0.3, gyro_z: 0.2 },
-  { timestamp: 2, acc_x: 0.5, acc_y: 0.2, acc_z: 0.9, gyro_x: 0.1, gyro_y: 0.3, gyro_z: 0.2 },
-  { timestamp: 3, acc_x: 0.5, acc_y: 0.2, acc_z: 0.9, gyro_x: 0.1, gyro_y: 0.3, gyro_z: 0.2 },
-  { timestamp: 4, acc_x: 0.5, acc_y: 0.2, acc_z: 0.9, gyro_x: 0.1, gyro_y: 0.3, gyro_z: 0.2 },
-  { timestamp: 5, acc_x: 0.5, acc_y: 0.2, acc_z: 0.9, gyro_x: 0.1, gyro_y: 0.3, gyro_z: 0.2 },
-  { timestamp: 6, acc_x: 0.5, acc_y: 0.2, acc_z: 0.9, gyro_x: 0.1, gyro_y: 0.3, gyro_z: 0.2 },
-  // Más datos aquí
-];
 
 
-module.exports = AlgoTensor;
+module.exports = AlgoTensor3;
 /*
 function main() {
   // Ejemplo de uso:

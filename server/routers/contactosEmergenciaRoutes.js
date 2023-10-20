@@ -1,8 +1,6 @@
-// contactosEmergenciaRoutes.js
 const express = require('express');
 const router = express.Router();
 
-// Importa el controlador de contactos de emergencia
 const contactosEmergenciaController = require('./DB_ContactosEmergencia');
 
 // Ruta para agregar un contacto de emergencia
