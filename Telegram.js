@@ -23,31 +23,37 @@ const token = '6600696741:AAE2HrAyuZYJE9w1XCh24yfWsHEcagqsnlo';
 // Crea una instancia de TelegramBotManager
 const botManager = new TelegramBotManager(token);
 
-// ID del chat del usuario que envía el mensaje
-const senderChatId = '1119289333';
+const Evento = require('./Evento'); 
 
-const estadoalerta='Golpeo';
-// El mensaje que deseas enviar
-const message = 'Hola, el usuario se '+estado+ ' y se encuentra en la siguiente ubicación';
+const evento = new Evento(
+  'Camila Anahi Alegre',
+  'ejemplo@example.com',
+  '2023-09-18',
+  '15:30:00',
+  'Ejemplo City',
+  'Activo'
+);
 
-// Envía el mensaje
-botManager.sendMessage(senderChatId, message)
-  .then(() => {
-    // Coordenadas de la ubicación (latitud y longitud)
+const chatIds = ['1119289333','6308381260'];
+
+const message = 'Hola, el usuario '+evento.usuario+ ' le ocurrió un '+ evento.estado+' y se encuentra en la siguiente ubicación';
 const latitude = 37.7749;
 const longitude = -122.4194;
-
-// Envía la ubicación
-botManager.sendLocation(senderChatId, latitude, longitude)
-  .then(() => {
-    console.log('Ubicación enviada con éxito');
-  })
-  .catch((error) => {
-    console.error('Error al enviar la ubicación:', error);
-  });
-  })
-  .catch((error) => {
-    console.error('Error al enviar el mensaje desde el usuario que envía:', error);
-  });
-
+// Envía el mensaje
+chatIds.forEach((chatId) => {
+  botManager.sendMessage(chatId, message)
+    .then(() => {
+      // Envía la ubicación
+      botManager.sendLocation(chatId, latitude, longitude)
+        .then(() => {
+          console.log('Ubicación enviada con éxito a ' + chatId);
+        })
+        .catch((error) => {
+          console.error('Error al enviar la ubicación a ' + chatId + ':', error);
+        });
+    })
+    .catch((error) => {
+      console.error('Error al enviar el mensaje a ' + chatId + ':', error);
+    });
+});
 
