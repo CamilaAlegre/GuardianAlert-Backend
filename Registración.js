@@ -27,3 +27,20 @@ class Registración {
   
 
   module.exports =  Registración;
+
+  
+  const DB_Usuarios = require('./DB_Usuarios');
+const db_usuario = new DB_Usuarios(); // Debe ser en minúscula
+
+const registroUsuario = new Registración(db_usuario);
+
+registroUsuario.registrarUsuario(
+  'Camila Anahi Alegre',
+  'jjj@example.com',
+  '11312212',
+  'Argentina',
+  'Bs.As',
+  'Garin',
+  '11/08/1995',
+  '123456'
+);

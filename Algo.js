@@ -55,6 +55,7 @@ class NeuralNetwork {
           parseFloat(row.post_gyro_max),
           parseFloat(row.post_lin_max),
         ];
+        
 
         const outputData = [parseInt(row.fall)]; // La columna 'fall' se utiliza como salida
 
@@ -67,6 +68,8 @@ class NeuralNetwork {
 
   // Método para entrenar la red neuronal
   trainNeuralNetwork(options) {
+    
+    console.log(this.dataset);
     const { Trainer } = synaptic;
     const trainer = new Trainer(this.network);
 
@@ -136,14 +139,14 @@ const inputForPrediction = [
 const Calculador = require('./Calculador');
 const algoritmo = new Calculador();
 
-async function obtenerCampos() {
-  const campos = await algoritmo.calcularCaracteristicas(datos);
+ function obtenerCampos() {
+  const campos =  algoritmo.calcularCaracteristicas(datos);
   console.log(campos);
   return campos;
 }
 
-async function main() {
-  const campos = await obtenerCampos();
+ function main() {
+  const campos =  obtenerCampos();
   const inputForPrediction = [
     campos[0],
     campos[1],
