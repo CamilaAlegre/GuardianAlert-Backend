@@ -62,6 +62,7 @@ class EvaluacionAlgoTensorImpacto {
 
 
       
+     await this.loadCSVDataPrueba('./datasetpruebaimpactos.csv');
       await this.trainNeuralNetwork();
       
       const  evaluationResults=await this.evaluateModel();
@@ -71,6 +72,65 @@ class EvaluacionAlgoTensorImpacto {
       console.error('Error al cargar datos:', error);
     }
   }
+
+
+
+
+
+
+
+
+  
+  async loadCSVDataPrueba(csvFilePath) {
+    const dataset2 = []; 
+    try {
+      const rows = fs.readFileSync(csvFilePath, 'utf8').split('\n');
+
+      for (let i = 0; i < rows.length; i++) {
+        const row = rows[i];
+        if (i != 0 && i != rows.length - 1) {
+          const values = row.split(',');
+  const inputData = [
+            parseFloat(values[0]),
+            parseFloat(values[1]), 
+            parseFloat(values[2]), 
+            parseFloat(values[3]), 
+
+            parseFloat(values[4]), 
+            parseFloat(values[5]), 
+            parseFloat(values[6]),
+            parseFloat(values[7]), 
+
+            parseFloat(values[8]), 
+
+            parseFloat(values[9]), 
+            parseFloat(values[10]), 
+            
+            parseFloat(values[11]),   
+            parseFloat(values[12]), 
+
+          ];
+
+          const outputData = [parseInt(values[14])]; 
+
+          dataset2.push({ input: inputData, output: outputData });
+
+        }
+      }
+
+      console.log('Datos de prueba cargados exitosamente.');
+
+     this.datasetprueba = dataset2;
+
+
+      
+    } catch (error) {
+      console.error('Error al cargar datos:', error);
+    }
+  }
+
+
+
 
   async trainNeuralNetwork() {
 
@@ -97,8 +157,8 @@ class EvaluacionAlgoTensorImpacto {
   
    // Método para evaluar el modelo
    async evaluateModel() {
-    const inputs = tf.tensor(this.dataset.map(item => item.input));
-    const outputs = tf.tensor(this.dataset.map(item => item.output));
+    const inputs = tf.tensor(this.datasetprueba.map(item => item.input));
+    const outputs = tf.tensor(this.datasetprueba.map(item => item.output));
 
     const evaluation = await this.model.evaluate(inputs, outputs);
 
