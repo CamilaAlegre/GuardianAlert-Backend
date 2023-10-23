@@ -62,7 +62,7 @@ class EvaluacionAlgoTensor3 {
       // Asigna el dataset al miembro this.dataset de la clase
       this.dataset = dataset2;
 
-
+      await this.loadCSVDataPrueba('./Test.csv');
       // Llama a trainNeuralNetwork después de cargar los datos
       await this.trainNeuralNetwork();
       
@@ -74,6 +74,70 @@ class EvaluacionAlgoTensor3 {
       console.error('Error al cargar datos:', error);
     }
   }
+
+
+
+
+
+
+
+
+
+
+
+  async loadCSVDataPrueba(csvFilePath) {
+    const dataset2 = []; 
+    try {
+      // Lee y procesa el archivo CSV de manera síncrona
+      const rows = fs.readFileSync(csvFilePath, 'utf8').split('\n');
+
+      for (let i = 0; i < rows.length; i++) {
+        const row = rows[i];
+        if (i != 0 && i != rows.length - 1) {
+          const values = row.split(',');
+
+          const inputData = [
+            parseFloat(values[1]), 
+            parseFloat(values[2]), 
+            parseFloat(values[3]), 
+            parseFloat(values[4]), 
+
+
+
+            parseFloat(values[6]), 
+            parseFloat(values[7]),
+
+            parseFloat(values[8]), 
+
+            parseFloat(values[9]), 
+
+            parseFloat(values[10]), 
+
+
+          ];
+
+          const outputData = [parseInt(values[11])]; // La columna 'fall' se utiliza como salida
+
+          dataset2.push({ input: inputData, output: outputData });
+  
+        }
+      }
+
+      console.log('Datos prueba cargados exitosamente.');
+
+      this.datasetprueba = dataset2;
+
+    } catch (error) {
+      console.error('Error al cargar datos:', error);
+    }
+  }
+
+
+
+
+
+
+
 
   // Método para entrenar la red neuronal
  async trainNeuralNetwork() {
@@ -97,8 +161,8 @@ class EvaluacionAlgoTensor3 {
   }
   
    async evaluateModel() {
-    const inputs = tf.tensor(this.dataset.map(item => item.input));
-    const outputs = tf.tensor(this.dataset.map(item => item.output));
+    const inputs = tf.tensor(this.datasetprueba.map(item => item.input));
+    const outputs = tf.tensor(this.datasetprueba.map(item => item.output));
 
     const evaluation = await this.model.evaluate(inputs, outputs);
 
