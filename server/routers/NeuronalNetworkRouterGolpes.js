@@ -47,7 +47,7 @@ app.get('/golpes', async(req, res) => {
   ];
   try {
     // Cargar los datos
-  const prediction= await tensor.loadCSVData('../../DatasetGolpes.csv', trainingOptions, inputForPrediction);
+  const prediction= await tensor.loadCSVData('../../datasetgolpes.csv', trainingOptions, inputForPrediction);
   
   res.send(`Predicción: ${JSON.stringify(prediction.dataSync())}`);
   
