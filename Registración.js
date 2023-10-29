@@ -30,8 +30,7 @@ class Registración {
 
   
   const DB_Usuarios = require('./DB_Usuarios');
-const db_usuario = new DB_Usuarios(); // Debe ser en minúscula
-
+const db_usuario = new DB_Usuarios(); 
 const registroUsuario = new Registración(db_usuario);
 
 registroUsuario.registrarUsuario(

@@ -17,10 +17,8 @@ class TelegramBotManager {
   }
 }
 
-// Reemplaza 'TU_TOKEN' con el token de acceso de tu bot de Telegram
 const token = '6600696741:AAE2HrAyuZYJE9w1XCh24yfWsHEcagqsnlo';
 
-// Crea una instancia de TelegramBotManager
 const botManager = new TelegramBotManager(token);
 
 const Evento = require('./Evento'); 

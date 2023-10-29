@@ -102,3 +102,42 @@ async  eliminarContactosDeEmergencia(filtro) {
 }
 
 module.exports = DB_ContactosEmergencia;
+
+/*
+const ContactoEmergencia = require('./ContactoEmergencia');
+const consultaemergencia = new DB_ContactosEmergencia();
+const filtro = { usuarioemail: 'acuaa@hotmail.com' };
+consultaemergencia.eliminarContactosDeEmergencia(filtro);
+*/
+
+/*
+const ContactoEmergencia = require('./ContactoEmergencia');
+const consultaemergencia = new DB_ContactosEmergencia();
+
+consultaemergencia.agregarContactoEmergencia(new ContactoEmergencia
+  ('Claudia','acuaa@hotmail.com',
+    'a','111','aaa','amigo') 
+  );*/
+
+  
+
+/* esto para agregar contactos de emergencia como se llamaria
+async function main() {
+  try {
+    const dbContactosEmergencia = new DB_ContactosEmergencia();
+    await dbContactosEmergencia.agregarContactosdeEmergencia();
+  } catch (error) {
+    console.error('Error en la función principal:', error);
+  }
+}
+
+main().catch(console.error);
+*/
+
+//como se llamaria para eliminar contactos de emergencia
+/*
+const filtro = { nombre: "Juan" };
+eliminarContactosDeEmergencia(filtro)
+  .catch(error => {
+    console.error('Error al eliminar contactos de emergencia:', error);
+  });*/

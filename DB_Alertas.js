@@ -84,3 +84,32 @@ class DB_Alertas {
 
   module.exports =  DB_Alertas;
 
+
+
+
+const db_alertas = new DB_Alertas();
+/*
+const nuevaAlerta = {
+  nombreyapellidousuario: 'Camila Anahi Alegre',
+  emailusuario: 'ejemplo@example.com',
+  fecha: '2023-09-18',
+  hora: '15:30:00',
+  lugar: 'Ejemplo City',
+  estadodelevento: 'Activo',
+};
+
+db_alertas.agregarHistorialEventos(nuevaAlerta);
+
+const emailUsuarioAConsultar = 'ejemplo@example.com'; 
+db_alertas.consultasdealertas(emailUsuarioAConsultar);*/
+  /*
+  async function main() {
+    try {
+      const dbAlertas = new DB_Alertas();
+      await dbAlertas.agregarHistorialEventos();
+    } catch (error) {
+      console.error('Error en la función principal:', error);
+    }
+  }
+  
+  main().catch(console.error);*/

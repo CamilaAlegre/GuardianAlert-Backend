@@ -16,10 +16,8 @@ class NeuralNetwork {
       output: this.outputLayer,
     });
 
-    // Crear un array para almacenar los datos del CSV
     this.dataset = [];
 
-    // Definir el mapeo de actividades
     this.activityMap = {
       'ETS': 0,
       'WAL': 1,
@@ -37,12 +35,10 @@ class NeuralNetwork {
     };
   }
 
-  // Método para cargar datos desde un archivo CSV
   loadCSVData(csvFilePath) {
     fs.createReadStream(csvFilePath)
       .pipe(csv())
       .on('data', (row) => {
-        // Procesar los valores del CSV y almacenarlos en el array de dataset
         const inputData = [
           parseFloat(row.acc_max),
           parseFloat(row.gyro_max),
@@ -90,7 +86,6 @@ class NeuralNetwork {
   }
 }
 
-// Ejemplo de uso:
 const neuralNetwork = new NeuralNetwork();
 neuralNetwork.loadCSVData('./Train.csv');
 
@@ -112,7 +107,7 @@ const datos = [
     { timestamp: 4, acc_x: 0.5, acc_y: 0.2, acc_z: 0.9, gyro_x: 0.1, gyro_y: 0.3, gyro_z: 0.2 },
     { timestamp: 5, acc_x: 0.5, acc_y: 0.2, acc_z: 0.9, gyro_x: 0.1, gyro_y: 0.3, gyro_z: 0.2 },
     { timestamp: 6, acc_x: 0.5, acc_y: 0.2, acc_z: 0.9, gyro_x: 0.1, gyro_y: 0.3, gyro_z: 0.2 },
-    // Más datos aquí
+   
   ];
 
 

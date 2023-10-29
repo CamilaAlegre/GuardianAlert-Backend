@@ -5,7 +5,6 @@ class Calculador{
 const datos=datosentrada.filter(dato => dato.timestamp >= 0 && dato.timestamp <7);
 const ventanaDatosCuartoSegundo =datos.filter(dato => dato.timestamp >= 4 && dato.timestamp <5);
 
-console.log(ventanaDatosCuartoSegundo);
 
 const magnitudesAceleracion = [];
 for (const dato of ventanaDatosCuartoSegundo) {

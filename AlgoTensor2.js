@@ -8,10 +8,8 @@ class NeuralNetwork {
     // Crear el modelo secuencial de TensorFlow.js
     this.model = tf.sequential();
 
-    // Agregar una capa de entrada con 10 unidades (ajusta según tus datos)
     this.model.add(tf.layers.dense({ units: 9, inputShape: [9], activation: 'relu' }));
 
-    // Agregar una capa de salida con 1 unidad y función de activación sigmoide
     this.model.add(tf.layers.dense({ units: 1, outputShape: 1,activation: 'sigmoid' }));
 
     this.model.add(tf.layers.dense({ units: 1,outputShape: 1, activation: 'linear' }));
@@ -19,10 +17,8 @@ class NeuralNetwork {
     // Compilar el modelo
     this.model.compile({ optimizer: 'adam', loss: 'binaryCrossentropy', metrics: ['accuracy'] });
 
-    // Crear un array para almacenar los datos del CSV
     this.dataset = [];
 
-    // Definir el mapeo de actividades
     this.activityMap = {
       'ETS': 0,
       'WAL': 1,
@@ -40,12 +36,9 @@ class NeuralNetwork {
     };
   }
 
-  // Define tu función loadCSVData
   loadCSVData(csvFilePath, options,input) {
-    const dataset2 = []; // Crea un array temporal para almacenar los datos
-
+    const dataset2 = []; 
     try {
-      // Lee y procesa el archivo CSV de manera síncrona
       const rows = fs.readFileSync(csvFilePath, 'utf8').split('\n');
 
       for (let i = 0; i < rows.length; i++) {
@@ -53,23 +46,22 @@ class NeuralNetwork {
         if (i != 0 && i != rows.length - 1) {
           const values = row.split(',');
 
-          // Selecciona las columnas específicas que deseas cargar
           const inputData = [
-            parseFloat(values[1]), // 'acc_max'
-            parseFloat(values[2]), // 'gyro_max'
-            parseFloat(values[3]), // 'acc_kurtosis'
-            parseFloat(values[4]), // 'gyro_kurtosis'
+            parseFloat(values[1]), 
+            parseFloat(values[2]), 
+            parseFloat(values[3]), 
+            parseFloat(values[4]), 
 
 
 
-            parseFloat(values[6]), // 'gyro_kurtosis'
-            parseFloat(values[7]), // 'gyro_kurtosis'
+            parseFloat(values[6]), 
+            parseFloat(values[7]), 
 
-            parseFloat(values[8]), // 'gyro_kurtosis'
+            parseFloat(values[8]), 
 
-            parseFloat(values[9]), // 'gyro_kurtosis'
+            parseFloat(values[9]), 
 
-            parseFloat(values[10]), // 'gyro_kurtosis'
+            parseFloat(values[10]), 
 
 
           ];
@@ -163,7 +155,7 @@ const datos = [
   { timestamp: 4, acc_x: 0.5, acc_y: 0.2, acc_z: 0.9, gyro_x: 0.1, gyro_y: 0.3, gyro_z: 0.2 },
   { timestamp: 5, acc_x: 0.5, acc_y: 0.2, acc_z: 0.9, gyro_x: 0.1, gyro_y: 0.3, gyro_z: 0.2 },
   { timestamp: 6, acc_x: 0.5, acc_y: 0.2, acc_z: 0.9, gyro_x: 0.1, gyro_y: 0.3, gyro_z: 0.2 },
-  // Más datos aquí
+ 
 ];
 
 
@@ -171,7 +163,6 @@ const datos = [
 
 
 function main() {
-  // Ejemplo de uso:
   const neuralNetwork = new NeuralNetwork();
 
   const trainingOptions = {

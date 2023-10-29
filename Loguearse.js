@@ -21,3 +21,9 @@ class Loguearse {
 
 
   module.exports =  Loguearse;
+
+
+const db_usuario = new DB_Usuarios();
+
+const login=new Loguearse(db_usuario);
+login.iniciarSesion('florenacua@gmail.com', '123456');

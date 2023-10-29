@@ -11,4 +11,3 @@ class Evento {
 
 
 module.exports =  Evento;
-

@@ -181,3 +181,51 @@ class DB_Usuarios {
 
 
 module.exports =  DB_Usuarios;
+
+/*
+const db_usuarios = new DB_Usuarios();
+
+const emailUsuarioAEliminar = 'ejemplo@example.com'; 
+db_usuarios.eliminarUsuario(emailUsuarioAEliminar);*/
+/*
+
+const consultaUsuario = new DB_Usuarios();
+
+consultaUsuario.modificarUsuario(new Usuario(
+  'Camila Anahi Alegre',
+  'ejemplo@example.com',
+  '11312212',
+  'Peru',
+  'Bs.As',
+  'Garin',
+  '11/08/1995',
+  '123456'));
+/*
+
+  async main() {
+    try {
+      await this.agregarUsuario();
+    } catch (error) {
+  console.error('Error en la función principal:', error);
+    }
+  }
+
+*/
+// Crear una instancia de Consulta_Usuario y ejecutar la función principal
+
+//consultaUsuario.main().catch(console.error);
+/*
+const consultaUsuario = new DB_Usuarios();
+const db_usuarios = require('./DB_Usuarios'); 
+
+consultaUsuario.agregarUsuario(new Usuario(
+    'Camila Anahi Alegre',
+    'ejemplo@example.com',
+    '11312212',
+    'Argentina',
+    'Bs.As',
+    'Garin',
+    '11/08/1995',
+    '123456')
+  );*/
+  

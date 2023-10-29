@@ -62,7 +62,7 @@ class EvaluacionAlgoTensorImpacto {
 
 
       
-     await this.loadCSVDataPrueba('./datasetpruebaimpactos.csv');
+     await this.loadCSVDataPrueba('./testimpactos.csv');
       await this.trainNeuralNetwork();
       
       const  evaluationResults=await this.evaluateModel();
@@ -144,7 +144,7 @@ class EvaluacionAlgoTensorImpacto {
      shuffle: true,
      verbose: 0,
      rate:0.00001,
-     validationSplit: 0.09,
+   //  validationSplit: 0.09,
   }).then(info => {
     console.log('Entrenamiento completado.');
 
@@ -195,7 +195,7 @@ function main() {
   
   
     try {
-     tensor.loadCSVData('./hoja.csv').then(prediction => {
+     tensor.loadCSVData('./completoimpactos.csv').then(prediction => {
     
     console.log('fin'); 
       
