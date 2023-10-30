@@ -23,18 +23,19 @@ const getByIdContact = async function (req, res, next) {
 const createContact = async function (req, res, next) {
   try {
     const contact = new ContactsModel({
-        name:req.body.name,
-        lastname: req.body.lastname,
-        phoneNumber:req.body.phoneNumber,
-        relationship:req.body.relationship
+      name: req.body.name,
+      lastname: req.body.lastname,
+      phoneNumber: req.body.phoneNumber,
+      relationship: req.body.relationship,
     });
     const document = await contact.save();
-    res.status(201).json({contact:document});
+    res.status(201).json({ contact: document });
   } catch (e) {
     console.log(e);
     res.status(400).json(e.message);
   }
 };
+
 
 const updateContact = async function (req, res, next) {
   try {

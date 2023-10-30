@@ -7,24 +7,36 @@ const jwt = require("jsonwebtoken");
 const mongodb=require('./database/connection');
 const contactsModel = require('./models/contactModel');
 const usersModel = require('./models/userModel');
+const eventsModel = require('./models/eventModel');
 require('dotenv').config();
+const bodyParser = require('body-parser');
+const cors = require('cors');
 
 const indexRouter = require('./routers/indexRoutes');
 const usersRouter = require('./routers/usersRoutes');
 const contactsRouter = require('./routers/contactsRoutes');
+const eventsRouter = require('./routers/eventRoutes');
+const dataRouter = require('./routers/dataRoutes');
+
 const port = 3000;
 
 const app = express();
 
 app.set("secretKey",process.env.SECRET_KEY);
+app.use(bodyParser.json());
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/contacts',contactsRouter);
+app.use('/events',eventsRouter);
+app.use('/data', dataRouter);
+
+app.use(cors()); 
 
 function verifyToken(req, res, next) {
   const authHeader = req.headers["authorization"];

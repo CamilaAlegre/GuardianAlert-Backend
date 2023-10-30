@@ -24,16 +24,18 @@ const getByIdUser = async function (req, res, next) {
 
 const createUser = async function (req, res, next) {
   try {
-    // Verifica si el usuario ya existe en la base de datos
 
     const existingUser = await UsersModel.findOne({ email: req.body.email });
-
+    console.log(existingUser);
     if (existingUser) {
-      // El usuario ya existe, devuelve un mensaje de error
-      return res.status(400).json({ success: false, message: 'El usuario ya existe' });
+      return res.status(400).json({
+        "success": false,
+        "message": "El usuario ya existe",
+        "userExists": true
+      }
+      );
     }
 
-    // El usuario no existe, procede a crearlo
     const user = new UsersModel({
       name: req.body.name,
       lastname: req.body.lastname,
@@ -99,6 +101,7 @@ const login = async function (req, res, next) {
           expiresIn: "1h",
         }
       );
+      console.log(token)
       res.json(token);
     }else{
       return  res.json({message:"El email y/o contraseña son incorrectos"});

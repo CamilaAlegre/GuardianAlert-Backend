@@ -9,7 +9,7 @@ router.get("/",(req, res, next) => req.app.verifyToken(req, res, next),contactsC
 router.get("/:id",(req, res, next) => req.app.verifyToken(req, res, next),contactsController.getByIdContact);
 
 //Crear un contacto
-router.post('/register', contactsController.createContact);
+router.post("/create", contactsController.createContact);
 
 //Actualizar un contacto
 router.put("/:id",(req, res, next) => req.app.verifyToken(req, res, next),contactsController.updateContact);
