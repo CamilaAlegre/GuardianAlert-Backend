@@ -49,10 +49,10 @@ app.get('/golpes', async(req, res) => {
        'Golpe'
       );
   
-      const chatIds = ['1119289333', '6308381260'];
-  
-      const latitude = 37.7749;
-      const longitude = -122.4194;
+      const chatIds = await mongoManager.consultaContactosdeEmergencia(datos.emailusuario);
+
+      const latitude = datos.latitude;
+      const longitude = datos.longitude
   
       // Send messages and locations to chatIds using Telegram class
       telegram.sendMessageAndLocationToChatIds(chatIds, evento, latitude, longitude)
