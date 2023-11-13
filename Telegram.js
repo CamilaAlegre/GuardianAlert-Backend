@@ -1,10 +1,10 @@
 const TelegramBot = require('node-telegram-bot-api');
 
 
-class TelegramBotManager {
+class Telegram {
   constructor() {
     this.token= '6600696741:AAE2HrAyuZYJE9w1XCh24yfWsHEcagqsnlo';
-    this.bot = new TelegramBot(token, { polling: false });
+    this.bot = new TelegramBot(this.token, { polling: false });
   }
 
   // Método para enviar un mensaje
@@ -30,6 +30,9 @@ class TelegramBotManager {
 
 }
 
+module.exports = Telegram;
+
+/*
 const botManager = new TelegramBotManager();
 
 const Evento = require('./Evento'); 
@@ -56,3 +59,4 @@ botManager.sendMessageAndLocationToChatIds(chatIds,evento, latitude, longitude)
   console.error('Error al enviar mensajes y ubicaciones:', error);
 });
 
+*/
