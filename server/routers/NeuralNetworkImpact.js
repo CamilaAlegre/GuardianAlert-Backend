@@ -2,19 +2,16 @@ const express = require('express');
 const app = express();
 
 app.use(express.json());
+const Telegram = require('./Telegram'); // Adjust the path as needed
+const telegram = new Telegram();
 
-app.get('/golpes', async(req, res) => {
-
+app.get('/impactos', async (req, res) => {
   const datosCodificados = req.query.data;
-
   const datosJSON = decodeURIComponent(datosCodificados);
   const datos = JSON.parse(datosJSON);
 
-  
-  const AlgoTensorGolpes = require('../../AlgoTensorGolpes');
-
-  const tensor = new AlgoTensorGolpes();
-
+  const AlgoTensorImpacto2 = require('../../AlgoTensorImpacto2');
+  const tensor = new AlgoTensorImpacto2();
 
   const trainingOptions = {
     rate: 0.1,
@@ -23,21 +20,25 @@ app.get('/golpes', async(req, res) => {
   };
 
   try {
-  const prediction= await tensor.loadCSVData('../../datasetgolpes.csv', trainingOptions, inputForPrediction);
-  
-  const threshold = 0.5; 
-  const isGolpe = prediction.dataSync()[0] >= threshold;
 
-  res.send({
-    input: inputForPrediction,
-    prediction: isGolpe,
-  
-  });
-  
-  
-  
+    const prediction = await tensor.loadCSVData('../../completoimpactos.csv', trainingOptions, datos);
 
-    if (isGolpe) {
+    const threshold = 0.5; 
+    const isImpact = prediction.dataSync()[0] >= threshold;
+
+    res.send({
+      input: inputForPrediction,
+      prediction: isImpact,
+    });
+
+
+
+
+
+
+
+
+    if (isImpact) {
       const Evento = require('../Evento');
   
       const evento = new Evento(
@@ -46,7 +47,7 @@ app.get('/golpes', async(req, res) => {
         datos.fecha,
         datos.hora,
         datos.lugar,
-       'Golpe'
+       'Activo'
       );
   
       const chatIds = ['1119289333', '6308381260'];
@@ -78,7 +79,8 @@ app.get('/golpes', async(req, res) => {
 
 
 
-  
+
+
 });
 
 const port =process.env.port || 80;

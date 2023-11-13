@@ -3,18 +3,14 @@ const app = express();
 
 app.use(express.json());
 
-app.get('/golpes', async(req, res) => {
 
+app.get('/caidas', async (req, res) => {
   const datosCodificados = req.query.data;
-
   const datosJSON = decodeURIComponent(datosCodificados);
   const datos = JSON.parse(datosJSON);
 
-  
-  const AlgoTensorGolpes = require('../../AlgoTensorGolpes');
-
-  const tensor = new AlgoTensorGolpes();
-
+  const AlgoTensorImpactos = require('../../AlgoTensor3');
+  const tensor = new AlgoTensorImpactos2();
 
   const trainingOptions = {
     rate: 0.1,
@@ -23,21 +19,30 @@ app.get('/golpes', async(req, res) => {
   };
 
   try {
-  const prediction= await tensor.loadCSVData('../../datasetgolpes.csv', trainingOptions, inputForPrediction);
-  
-  const threshold = 0.5; 
-  const isGolpe = prediction.dataSync()[0] >= threshold;
 
-  res.send({
-    input: inputForPrediction,
-    prediction: isGolpe,
-  
-  });
-  
-  
-  
+    // Load the data and train the model
+    const prediction = await tensor.loadCSVData('../../Train2.csv', trainingOptions, datos);
 
-    if (isGolpe) {
+    // Assuming prediction is a probability between 0 and 1
+    const threshold = 0.5; // Adjust this threshold as needed
+    const isCaida= prediction.dataSync()[0] >= threshold;
+
+    // You can modify this response based on your requirements
+    res.send({
+      input: inputForPrediction,
+      prediction: isCaida,
+    });
+
+
+
+
+
+
+
+
+
+
+    if (isCaida) {
       const Evento = require('../Evento');
   
       const evento = new Evento(
@@ -46,7 +51,7 @@ app.get('/golpes', async(req, res) => {
         datos.fecha,
         datos.hora,
         datos.lugar,
-       'Golpe'
+       'Caida'
       );
   
       const chatIds = ['1119289333', '6308381260'];
@@ -78,8 +83,11 @@ app.get('/golpes', async(req, res) => {
 
 
 
-  
-});
 
+
+
+
+
+});
 const port =process.env.port || 80;
 app.listen(port, ()=> console.log(`Escuchando en puerto ${port}...`));
