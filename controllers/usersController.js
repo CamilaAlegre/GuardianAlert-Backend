@@ -113,4 +113,25 @@ const login = async function (req, res, next) {
   }
 };
 
-module.exports = {getAllUsers,getByIdUser,createUser,updateUser,deleteUser,login};
+const extractUserId = async function (req, res, next) {
+  try {
+    const token = req.body.token; // Supongo que el token se envía en el header 'Authorization'
+    if (!token) {
+      return res.status(401).json({ message: 'Token no proporcionado' });
+    }
+
+    jwt.verify(token, req.app.get('secretKey'), (err, decoded) => {
+      if (err) {
+        return res.status(401).json({ message: 'Token inválido' });
+      }
+      const userId = decoded.userId; // Extraer el ID de usuario del token decodificado
+      req.userId = userId; // Asignar el ID del usuario a req para su uso en otros controladores
+      next();
+    });
+  } catch (e) {
+    console.log(e);
+    res.status(500).json({ message: 'Error interno del servidor' });
+  }
+};
+
+module.exports = {getAllUsers,getByIdUser,createUser,updateUser,deleteUser,login,extractUserId};

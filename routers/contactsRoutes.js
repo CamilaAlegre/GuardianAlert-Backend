@@ -3,16 +3,19 @@ const router = express.Router();
 const contactsController = require('../controllers/contactsController');
 
 //Retornando todos los contactos
-router.get("/",(req, res, next) => req.app.verifyToken(req, res, next),contactsController.getAllContacts);
+router.get("/",contactsController.getAllContacts);
 
 //Retornando un contacto dado su id
-router.get("/:id",(req, res, next) => req.app.verifyToken(req, res, next),contactsController.getByIdContact);
+//router.get("/:id",contactsController.getByIdContact);
 
 //Crear un contacto
-router.post("/create", contactsController.createContact);
+router.post("/create", contactsController.extractUserId, contactsController.createContact);
+
+//recuperar contact
+router.get("/:userId", contactsController.getContactByUserId);
 
 //Actualizar un contacto
-router.put("/:id",(req, res, next) => req.app.verifyToken(req, res, next),contactsController.updateContact);
+router.put("/:id",contactsController.updateContact);
 
 //Eliminar contacto
 router.delete("/:id",(req, res, next) => req.app.verifyToken(req, res, next),contactsController.deleteContact);

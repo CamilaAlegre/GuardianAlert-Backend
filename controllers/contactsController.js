@@ -1,4 +1,5 @@
 const ContactsModel = require('../models/contactModel');
+const jwt = require('jsonwebtoken');
 
 const getAllContacts = async function (req, res, next) {
   try {
@@ -9,6 +10,23 @@ const getAllContacts = async function (req, res, next) {
     next(e);
   }
 };
+
+const getContactByUserId = async function (req, res, next) {
+  try {
+    const userId = req.params.userId; // Obtener el userId de los parámetros de la solicitud
+
+    const contact = await ContactsModel.findOne({ user: userId });
+    if (!contact) {
+      return res.status(404).json({ message: "No se encontró contacto para este usuario" });
+    }
+
+    res.status(200).json({ contact });
+  } catch (e) {
+    console.log(e);
+    res.status(500).json({ message: "Error interno del servidor" });
+  }
+};
+
 
 const getByIdContact = async function (req, res, next) {
   try {
@@ -27,7 +45,9 @@ const createContact = async function (req, res, next) {
       lastname: req.body.lastname,
       phoneNumber: req.body.phoneNumber,
       relationship: req.body.relationship,
+      user: req.userId, // Asociar el ID de usuario con el contacto
     });
+
     const document = await contact.save();
     res.status(201).json({ contact: document });
   } catch (e) {
@@ -36,6 +56,53 @@ const createContact = async function (req, res, next) {
   }
 };
 
+/*const extractContactId = async function (req, res, next) {
+  try {
+    const token = req.body.token; // Esto dependerá de cómo se envíe el token
+
+    if (!token) {
+      return res.status(401).json({ message: 'Token no proporcionado' });
+    }
+
+    jwt.verify(token, req.app.get('secretKey'), (err, decoded) => {
+      if (err) {
+        return res.status(401).json({ message: 'Token inválido' });
+      }
+      const contactId = decoded.contactId; // Extraer el ID de usuario del token decodificado
+      req.contactId = contactId; // Asignar el ID del usuario a req para su uso en otros controladores
+      next();
+    });
+  } catch (e) {
+    console.log(e);
+    res.status(500).json({ message: 'Error interno del servidor' });
+  }
+};*/
+
+//front
+//presionamos btn, se abre la vista.
+//obtiene eltoken y se lo envia al back 
+//el back decodifica el token y luego crea el contact con el iduser del token
+//
+const extractUserId = async function (req, res, next) {
+  try {
+    const token = req.body.token; // Supongo que el token se envía en el header 'Authorization'
+    if (!token) {
+      return res.status(401).json({ message: 'Token no proporcionado' });
+    }
+
+    jwt.verify(token, req.app.get('secretKey'), (err, decoded) => {
+      if (err) {
+        return res.status(401).json({ message: 'Token inválido' });
+      }
+      const userId = decoded.userId; // Extraer el ID de usuario del token decodificado
+      req.userId = userId; // Asignar el ID del usuario a req para su uso en otros controladores
+      next();
+    });
+  } catch (e) {
+    console.log(e);
+    res.status(500).json({ message: 'Error interno del servidor' });
+  }
+};
 
 const updateContact = async function (req, res, next) {
   try {
@@ -65,4 +132,4 @@ const deleteContact = async function (req, res, next) {
   }
 };
 
-module.exports = {getAllContacts,getByIdContact,createContact,updateContact,deleteContact};
+module.exports = {getAllContacts,getByIdContact,createContact,updateContact,extractUserId,deleteContact,getContactByUserId};

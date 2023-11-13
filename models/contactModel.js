@@ -16,6 +16,9 @@ const contactSchema = mongoose.Schema({
     relationship:{
         type:String,
         required:[true,"El campo es obligatorio"]
+    },
+    user:{
+        type:String
     }
 });
 
