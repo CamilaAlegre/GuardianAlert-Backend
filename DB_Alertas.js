@@ -35,7 +35,7 @@ class DB_Alertas {
           fecha: alerta.fecha,
           hora: alerta.hora,
           lugar: alerta.lugar,
-          estadodelevento: alerta.estadodelevento,
+          estado: alerta.estado,
         };
         const result = await collection.insertOne(documento);
         console.log(`Documento insertado con el ID: ${result.insertedId}`);
@@ -66,17 +66,23 @@ class DB_Alertas {
         const collectionName = "Alertas";
         const collection = db.collection(collectionName);
     
-        const alertas = await collection.find({ emailusuario: emailusuario}).toArray();
+        const alertas = await collection.find({ emailusuario: emailusuario }).toArray();
     
-        console.log(alertas);
-        return new Evento(alertas.usuario, alertas.emailusuario,alertas.fecha,alertas.hora, alertas.lugar,alertas.estado);
-     
+        const eventos = alertas.map(alerta => new Evento(
+          alerta.usuario,
+          alerta.emailusuario,
+          alerta.fecha,
+          alerta.hora,
+          alerta.lugar,
+          alerta.estado
+        ));
+    
+        return eventos;
       } finally {
         await client.close();
       }
     }
     
-
 
   }
 

@@ -5,6 +5,7 @@ const Usuario = require ('./Usuario');
 const user = "alegreanahi1995";
 const password = "Zm7UfeOn9dfI3XXE";
 const uri = `mongodb+srv://${user}:${password}@cluster0.scrh4hl.mongodb.net/?retryWrites=true&w=majority`;
+
 const dbName = "db_GuardianAlert";
 
 class DB_Usuarios {
@@ -165,10 +166,12 @@ class DB_Usuarios {
         const result = await collection.updateOne(filtro, nuevosDatos);
   
         if (result.modifiedCount === 1) {
+          
           console.log(`Usuario modificado con éxito`);
         } else {
           console.log(`No se encontró el usuario o no se realizó ninguna modificación`);
         }
+        return result;
       } finally {
         await client.close();
       }
@@ -181,13 +184,12 @@ class DB_Usuarios {
 
 
 module.exports =  DB_Usuarios;
-
 /*
+
 const db_usuarios = new DB_Usuarios();
 
 const emailUsuarioAEliminar = 'ejemplo@example.com'; 
-db_usuarios.eliminarUsuario(emailUsuarioAEliminar);*/
-/*
+db_usuarios.eliminarUsuario(emailUsuarioAEliminar);
 
 const consultaUsuario = new DB_Usuarios();
 
@@ -200,8 +202,8 @@ consultaUsuario.modificarUsuario(new Usuario(
   'Garin',
   '11/08/1995',
   '123456'));
+*/
 /*
-
   async main() {
     try {
       await this.agregarUsuario();
@@ -210,11 +212,10 @@ consultaUsuario.modificarUsuario(new Usuario(
     }
   }
 
-*/
 // Crear una instancia de Consulta_Usuario y ejecutar la función principal
 
 //consultaUsuario.main().catch(console.error);
-/*
+
 const consultaUsuario = new DB_Usuarios();
 const db_usuarios = require('./DB_Usuarios'); 
 
@@ -228,4 +229,3 @@ consultaUsuario.agregarUsuario(new Usuario(
     '11/08/1995',
     '123456')
   );*/
-  

@@ -152,7 +152,6 @@ class EvaluacionAlgoTensor3 {
       shuffle: true,
       verbose: 0,
       rate:0.1,
-      validationSplit: 0.2,
    });
    
    console.log('Entrenamiento completado.');

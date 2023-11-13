@@ -8,9 +8,11 @@ class EvaluacionAlgoTensorImpacto {
     // Crear el modelo secuencial de TensorFlow.js
     this.model = tf.sequential();
 
-    this.model.add(tf.layers.dense({ units: 10, inputShape: [13], activation: 'relu' }));
+    this.model.add(tf.layers.dense({ units: 10, inputShape: [13], activation: 'relu' ,   kernelRegularizer: tf.regularizers.l1({ l1: 0.01 }), // Ajusta el valor según sea necesario
+  }));
 
-    this.model.add(tf.layers.dense({ units: 1, outputShape: [1],activation: 'sigmoid' }));
+    this.model.add(tf.layers.dense({ units: 1, outputShape: [1],activation: 'sigmoid'    ,kernelRegularizer: tf.regularizers.l1({ l1: 0.01 }), // Ajusta el valor según sea necesario
+  }));
 
     this.model.compile({ optimizer: 'adam', loss: 'binaryCrossentropy', metrics: ['accuracy'] });
 
@@ -137,19 +139,37 @@ class EvaluacionAlgoTensorImpacto {
     const inputs = tf.tensor(this.dataset.map(item => item.input));
     const outputs = tf.tensor(this.dataset.map(item => item.output));
 
+    const history = []; // Variable para almacenar el historial
      await this.model.fit(inputs, outputs, {
-     epochs: 200, 
+   /*  epochs: 200, 
      batchSize: 64, 
      error: 0.005,
      shuffle: true,
      verbose: 0,
-     rate:0.00001,
-   //  validationSplit: 0.09,
-  }).then(info => {
+     rate:0.00001,*/
+
+     
+    epochs: 500, 
+    batchSize: 16,  
+    error: 0.005,
+    shuffle: true,
+    verbose: 0,
+    rate:0.0001,
+    callbacks: {
+      // Callback para recopilar el historial
+      onEpochEnd: (epoch, logs) => {
+        history.push(logs);
+      },
+    },
+  
+    //validationSplit: 0.09,
+  });
     console.log('Entrenamiento completado.');
 
     
-  });
+    // Imprimir el historial después del entrenamiento
+    console.log('Historial:', history);
+
   
   }
 
@@ -166,9 +186,15 @@ class EvaluacionAlgoTensorImpacto {
     const accuracy = evaluation[1].dataSync()[0];
 
 
+   // const evaluationResults = await this.evaluateModel();
+//const testAccuracy = evaluationResults.accuracy;
+
+//console.log(`Precisión en Datos de Evaluación: ${testAccuracy}`);
+
     return {
       loss,
       accuracy,
+    //  testAccuracy
       // Otras métricas...
     };
   }

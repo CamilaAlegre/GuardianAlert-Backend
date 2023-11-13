@@ -8,7 +8,7 @@ class AlgoTensor3 {
     // Crear el modelo secuencial de TensorFlow.js
     this.model = tf.sequential();
 
-   this.model.add(tf.layers.dense({ units: 10, inputShape: [9], activation: 'relu' }));
+   this.model.add(tf.layers.dense({ units: 9, inputShape: [9], activation: 'relu' }));
 
     this.model.add(tf.layers.dense({ units: 1, outputShape: [1],activation: 'sigmoid' }));
 
@@ -17,21 +17,6 @@ class AlgoTensor3 {
 
     this.dataset = [];
 
-    this.activityMap = {
-      'ETS': 0,
-      'WAL': 1,
-      'JOG': 2,
-      'JUM': 3,
-      'STU': 4,
-      'STN': 5,
-      'SCH': 6,
-      'CSI': 7,
-      'CSO': 8,
-      'FOL': 9,
-      'FKL': 10,
-      'SDL': 11,
-      'BSC': 12,
-    };
   }
 
    async loadCSVData(csvFilePath, options,input) {
@@ -127,10 +112,7 @@ class AlgoTensor3 {
 
   }
 
-  // Método para mapear las etiquetas de actividad a valores numéricos
-  activityToNumeric(activityLabel) {
-    return this.activityMap[activityLabel] || 0;
-  }
+
 }
 
 
