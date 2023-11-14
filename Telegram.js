@@ -9,12 +9,15 @@ class Telegram {
 
   // Método para enviar un mensaje
   sendMessage(chatId, message) {
-    return this.bot.sendMessage(chatId, message);
+  const promises=this.bot.sendMessage(chatId, message);
+   Promise.all(promises);
+   return promises;
+ 
   }
 
   // Método para enviar una ubicación
   sendLocation(chatId, latitude, longitude) {
-    return this.bot.sendLocation(chatId, latitude, longitude);
+     return this.bot.sendLocation(chatId, latitude, longitude);
   }
 
 
@@ -33,7 +36,7 @@ class Telegram {
 module.exports = Telegram;
 
 /*
-const botManager = new TelegramBotManager();
+const botManager = new Telegram();
 
 const Evento = require('./Evento'); 
 
@@ -46,8 +49,8 @@ const evento = new Evento(
   'Activo'
 );
 
-const chatIds = ['1119289333','6308381260'];
-
+//const chatIds = ['1119289333','6308381260'];
+const chatIds = ['1119289333'];
 const latitude = 37.7749;
 const longitude = -122.4194;
 /// Envía mensajes y ubicaciones a los chatIds
