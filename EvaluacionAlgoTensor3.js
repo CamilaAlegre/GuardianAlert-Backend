@@ -7,7 +7,7 @@ class EvaluacionAlgoTensor3 {
     // Crear el modelo secuencial de TensorFlow.js
     this.model = tf.sequential();
 
-    this.model.add(tf.layers.dense({ units: 10, inputShape: [9], activation: 'relu' }));
+    this.model.add(tf.layers.dense({ units: 9, inputShape: [9], activation: 'relu' }));
 
     this.model.add(tf.layers.dense({ units: 1, outputShape: [1],activation: 'sigmoid' }));
 
