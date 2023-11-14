@@ -50,9 +50,9 @@ describe('DB_ContactosEmergencia', () => {
       };
 
       // Simular inserción en la base de datos
-      mockCollection.insertOne.mockResolvedValueOnce({ insertedId: 'someId' });
+      mockCollection.insertOne.mockResolvedValueOnce({ insertedId: '123' });
 
-      await dbContactosEmergencia.agregarContactoEmergencia(contactoEmergencia);
+     const resultado= await dbContactosEmergencia.agregarContactoEmergencia(contactoEmergencia);
 
       // Verificar si la función de inserción se llamó correctamente
       expect(mockCollection.insertOne).toHaveBeenCalledWith({
@@ -63,6 +63,10 @@ describe('DB_ContactosEmergencia', () => {
         email: 'emergency@example.com',
         relacion: 'Amigo',
       });
+
+      
+    expect(resultado).toEqual('123');
+    
     });
   });
 
@@ -86,15 +90,19 @@ describe('DB_ContactosEmergencia', () => {
 
   describe('eliminarContactosDeEmergencia', () => {
     it('Deberia eliminar un contactos de usuario por filtro', async () => {
-      const filtro = { usuarioemail: 'test@example.com',  telefono: 11251426};
+      const filtro = { usuarioemail: 'test@example.com'};
 
       // Simular la eliminación en la base de datos
       mockCollection.deleteMany.mockResolvedValueOnce({ deletedCount: 1 });
 
-      await dbContactosEmergencia.eliminarContactosDeEmergencia(filtro);
+      const resultado=await dbContactosEmergencia.eliminarContactosDeEmergencia(filtro);
 
       // Verificar si la función de eliminación se llamó correctamente
-      expect(mockCollection.deleteMany).toHaveBeenCalledWith({ usuarioemail: 'test@example.com', telefono: 11251426 });
+      expect(mockCollection.deleteMany).toHaveBeenCalledWith({ usuarioemail: 'test@example.com'});
+ 
+ 
+ 
+      expect(resultado).toBe(true);
     });
   });
 });

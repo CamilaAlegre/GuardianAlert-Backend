@@ -38,7 +38,11 @@ class DB_ContactosEmergencia {
 
       const result = await collection.insertOne(documento);
       console.log(`Contacto de Emergencia agregado con el ID: ${result.insertedId}`);
+
+
+      return result.insertedId;
     } finally {
+
       await client.close();
     }
   }
@@ -95,6 +99,8 @@ async  eliminarContactosDeEmergencia(filtro) {
     console.log(`Se eliminaron ${deleteResult.deletedCount} contactos de emergencia.`);
     
     console.log('Eliminación finalizada');
+    
+    return deleteResult.deletedCount===1;
   } finally {
     await client.close();
   }

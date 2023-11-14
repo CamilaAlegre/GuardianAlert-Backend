@@ -39,6 +39,7 @@ class DB_Alertas {
         };
         const result = await collection.insertOne(documento);
         console.log(`Documento insertado con el ID: ${result.insertedId}`);
+        return result.insertedId;
       } finally {
         await client.close();
       }

@@ -41,7 +41,7 @@ describe('Pruebas para DB_Usuarios', () => {
   });
   it('debería agregar un usuario', async () => {
     // Configura el mock para insertOne usando mockResolvedValueOnce
-    mockCollection.insertOne.mockResolvedValueOnce({ insertedId: 'SomeId' });
+    mockCollection.insertOne.mockResolvedValueOnce({ insertedId: '123' });
 
     const usuario = {
       nombre_y_apellido: 'Usuario Nombre Apellido',
@@ -54,7 +54,7 @@ describe('Pruebas para DB_Usuarios', () => {
       contraseña: 'contraseñausuario1',
     };
 
-    await db_usuarios.agregarUsuario(usuario);
+    const resultado=await db_usuarios.agregarUsuario(usuario);
 
 
     // Verifica que los argumentos pasados a insertOne sean los esperados
@@ -68,6 +68,13 @@ describe('Pruebas para DB_Usuarios', () => {
       fechadenacimiento: '11/01/1965',
       contraseña: 'contraseñausuario1',
     });
+
+    
+    // Verifica que la función devuelva 1
+ 
+    expect(resultado).toEqual('123');
+    
+
   });
 
 
@@ -77,10 +84,15 @@ describe('Pruebas para DB_Usuarios', () => {
     mockCollection.deleteOne.mockResolvedValueOnce({ deletedCount: 1 });
     const usuarioemail = 'test@example.com';
   
-    await db_usuarios.eliminarUsuario(usuarioemail);
+    const resultado=await db_usuarios.eliminarUsuario(usuarioemail);
   
     // Verifica que los argumentos pasados a deleteOne sean los esperados
     expect(mockCollection.deleteOne).toHaveBeenCalledWith({ email: 'test@example.com' });
+
+    
+    // Verifica que la función devuelva 1
+    expect(resultado).toBe(true);
+
   });
   
 
@@ -162,7 +174,7 @@ describe('Pruebas para DB_Usuarios', () => {
     );
   
     // Verifica que la función devuelva 1
-   // expect(resultado).toBe(1);
+    expect(resultado).toBe(true);
 
 
     

@@ -41,12 +41,12 @@ describe('Pruebas para DB_Alertas', () => {
       fecha: '2023-09-18',
       hora: '15:30:00',
       lugar: 'Buenos Aires, Garin',
-      estado: 'Activo',
+      estado: 'Caida',
     };
 
-    mockCollection.insertOne.mockResolvedValueOnce({ insertedId: 'SomeId' });
+    mockCollection.insertOne.mockResolvedValueOnce({ insertedId: '123' });
 
-    await db_alertas.agregarHistorialEventos(nuevaAlerta);
+    const resultado=await db_alertas.agregarHistorialEventos(nuevaAlerta);
 
     expect(mockCollection.insertOne).toHaveBeenCalledWith({
       usuario: nuevaAlerta.nombreyapellidousuario,
@@ -56,6 +56,10 @@ describe('Pruebas para DB_Alertas', () => {
       lugar: nuevaAlerta.lugar,
       estado: nuevaAlerta.estado,
     });
+
+    
+    expect(resultado).toEqual('21');
+    
   });
 
   it('debería consultar alertas', async () => {

@@ -43,6 +43,8 @@ class DB_Usuarios {
       const result = await collection.insertOne(documento);
       console.log(`Documento insertado con el ID: ${result.insertedId}`);
 
+      return result.insertedId;
+
     } finally {
       await client.close();
     }
@@ -77,6 +79,8 @@ class DB_Usuarios {
       } else {
         console.log(`Usuario con email ${email} no encontrado.`);
       }
+      
+      return result.deletedCount===1;
     } finally {
       await client.close();
     }
@@ -171,7 +175,7 @@ class DB_Usuarios {
         } else {
           console.log(`No se encontró el usuario o no se realizó ninguna modificación`);
         }
-        return result;
+        return result.modifiedCount===1;
       } finally {
         await client.close();
       }
