@@ -8,7 +8,7 @@ class AlgoTensorImpacto2 {
     // Crear el modelo secuencial de TensorFlow.js
     this.model = tf.sequential();
 
-    this.model.add(tf.layers.dense({ units: 10, inputShape: [13], activation: 'relu' }));
+    this.model.add(tf.layers.dense({ units: 13, inputShape: [13], activation: 'relu' }));
 
     this.model.add(tf.layers.dense({ units: 1, outputShape: [1],activation: 'sigmoid' }));
 
