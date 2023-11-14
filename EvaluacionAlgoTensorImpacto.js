@@ -8,7 +8,7 @@ class EvaluacionAlgoTensorImpacto {
     // Crear el modelo secuencial de TensorFlow.js
     this.model = tf.sequential();
 
-    this.model.add(tf.layers.dense({ units: 10, inputShape: [13], activation: 'relu' ,   kernelRegularizer: tf.regularizers.l1({ l1: 0.01 }), // Ajusta el valor según sea necesario
+    this.model.add(tf.layers.dense({ units: 13, inputShape: [13], activation: 'relu' ,   kernelRegularizer: tf.regularizers.l1({ l1: 0.01 }), // Ajusta el valor según sea necesario
   }));
 
     this.model.add(tf.layers.dense({ units: 1, outputShape: [1],activation: 'sigmoid'    ,kernelRegularizer: tf.regularizers.l1({ l1: 0.01 }), // Ajusta el valor según sea necesario
@@ -21,7 +21,20 @@ class EvaluacionAlgoTensorImpacto {
 
   }
 
+
+    normalizeData(data) {
+    const tensorData = tf.tensor2d(data);
+    const mean = tensorData.mean(0);
+    const std = tensorData.sub(mean).square().mean(0).sqrt();
+    const normalizedData = tensorData.sub(mean).div(std);
+    return normalizedData;
+  }
+
+  
+
   async loadCSVData(csvFilePath) {
+
+
     const dataset2 = []; 
     try {
       const rows = fs.readFileSync(csvFilePath, 'utf8').split('\n');
@@ -35,17 +48,13 @@ class EvaluacionAlgoTensorImpacto {
             parseFloat(values[1]), 
             parseFloat(values[2]), 
             parseFloat(values[3]), 
-
             parseFloat(values[4]), 
             parseFloat(values[5]), 
             parseFloat(values[6]),
             parseFloat(values[7]), 
-
             parseFloat(values[8]), 
-
             parseFloat(values[9]), 
-            parseFloat(values[10]), 
-            
+            parseFloat(values[10]),   
             parseFloat(values[11]),   
             parseFloat(values[12]), 
 
@@ -60,6 +69,7 @@ class EvaluacionAlgoTensorImpacto {
 
       console.log('Datos cargados exitosamente.');
 
+      
      this.dataset = dataset2;
 
 
@@ -136,9 +146,12 @@ class EvaluacionAlgoTensorImpacto {
 
   async trainNeuralNetwork() {
 
+    const inputs = this.normalizeData(this.dataset.map(item => item.input));
+    const outputs = tf.tensor(this.dataset.map(item => item.output));
+/*
     const inputs = tf.tensor(this.dataset.map(item => item.input));
     const outputs = tf.tensor(this.dataset.map(item => item.output));
-
+*/
     const history = []; // Variable para almacenar el historial
      await this.model.fit(inputs, outputs, {
    /*  epochs: 200, 
@@ -148,7 +161,7 @@ class EvaluacionAlgoTensorImpacto {
      verbose: 0,
      rate:0.00001,*/
 
-     
+     /*  esto esta bien
     epochs: 500, 
     batchSize: 16,  
     error: 0.005,
@@ -162,13 +175,35 @@ class EvaluacionAlgoTensorImpacto {
       },
     },
   
-    //validationSplit: 0.09,
+    //validationSplit: 0.09,*/
+
+    epochs: 30, 
+    batchSize: 16,  
+    error: 0.005,
+    shuffle: true,
+    verbose: 0,
+    rate:0.001,
+/*
+    epochs: 200, 
+    batchSize: 32,  
+    error: 0.005,
+    shuffle: true,
+    verbose: 0,
+    rate:0.1,
+    /*callbacks: {
+      // Callback para recopilar el historial
+      onEpochEnd: (epoch, logs) => {
+        history.push(logs);
+      },
+    },*/
+  
+  
   });
     console.log('Entrenamiento completado.');
 
     
     // Imprimir el historial después del entrenamiento
-    console.log('Historial:', history);
+   // console.log('Historial:', history);
 
   
   }
@@ -177,7 +212,10 @@ class EvaluacionAlgoTensorImpacto {
   
    // Método para evaluar el modelo
    async evaluateModel() {
-    const inputs = tf.tensor(this.datasetprueba.map(item => item.input));
+   /* const inputs = tf.tensor(this.datasetprueba.map(item => item.input));
+    const outputs = tf.tensor(this.datasetprueba.map(item => item.output));
+*/
+    const inputs = this.normalizeData(this.datasetprueba.map(item => item.input));
     const outputs = tf.tensor(this.datasetprueba.map(item => item.output));
 
     const evaluation = await this.model.evaluate(inputs, outputs);

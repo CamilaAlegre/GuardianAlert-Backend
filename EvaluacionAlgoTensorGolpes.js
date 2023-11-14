@@ -8,7 +8,7 @@ class EvaluacionAlgoTensorImpacto {
     // Crear el modelo secuencial de TensorFlow.js
     this.model = tf.sequential();
 
-    this.model.add(tf.layers.dense({ units: 10, inputShape: [13], activation: 'relu' }));
+    this.model.add(tf.layers.dense({ units: 13, inputShape: [13], activation: 'relu' }));
 
     this.model.add(tf.layers.dense({ units: 1, outputShape: [1],activation: 'sigmoid' }));
 
@@ -132,9 +132,22 @@ class EvaluacionAlgoTensorImpacto {
 
 
 
+  normalizeData(data) {
+    const tensorData = tf.tensor2d(data);
+    const mean = tensorData.mean(0);
+    const std = tensorData.sub(mean).square().mean(0).sqrt();
+    const normalizedData = tensorData.sub(mean).div(std);
+    return normalizedData;
+  }
+
+  
   async trainNeuralNetwork() {
 
-    const inputs = tf.tensor(this.dataset.map(item => item.input));
+    /*const inputs = tf.tensor(this.dataset.map(item => item.input));
+    const outputs = tf.tensor(this.dataset.map(item => item.output));
+*/
+
+    const inputs = this.normalizeData(this.dataset.map(item => item.input));
     const outputs = tf.tensor(this.dataset.map(item => item.output));
 
      await this.model.fit(inputs, outputs, {
@@ -157,9 +170,13 @@ class EvaluacionAlgoTensorImpacto {
   
    // Método para evaluar el modelo
    async evaluateModel() {
-    const inputs = tf.tensor(this.datasetprueba.map(item => item.input));
+  /*  const inputs = tf.tensor(this.datasetprueba.map(item => item.input));
     const outputs = tf.tensor(this.datasetprueba.map(item => item.output));
 
+    
+*/
+const inputs = this.normalizeData(this.datasetprueba.map(item => item.input));
+const outputs = tf.tensor(this.datasetprueba.map(item => item.output));
     const evaluation = await this.model.evaluate(inputs, outputs);
 
     const loss = evaluation[0].dataSync()[0];
@@ -195,7 +212,7 @@ function main() {
   
   
     try {
-     tensor.loadCSVData('./completogolpes.csv').then(prediction => {
+     tensor.loadCSVData('./datasetgolpes.csv').then(prediction => {
     
     console.log('fin'); 
       
