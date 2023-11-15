@@ -177,7 +177,7 @@ class EvaluacionAlgoTensorImpacto {
   
     //validationSplit: 0.09,*/
 
-    epochs: 30, 
+    epochs: 10, 
     batchSize: 16,  
     error: 0.005,
     shuffle: true,
