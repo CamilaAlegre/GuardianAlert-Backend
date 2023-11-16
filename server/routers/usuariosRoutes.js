@@ -4,7 +4,7 @@ const DB_Usuarios = require('./DB_Usuarios');
 
 const usuariosController = new DB_Usuarios();
 
-router.post('/', async (req, res) => {
+router.post('/agregarusuario', async (req, res) => {
   try {
     const usuario = req.body;
     await usuariosController.agregarUsuario(usuario);
@@ -16,7 +16,7 @@ router.post('/', async (req, res) => {
 });
 
 // Ruta para consultar usuarios por email
-router.get('/:email', async (req, res) => {
+router.get('/:consultarusuarioemail', async (req, res) => {
   try {
     const email = req.params.email;
     const usuario = await usuariosController.consultarUsuario(email);
@@ -28,7 +28,7 @@ router.get('/:email', async (req, res) => {
 });
 
 // Ruta para modificar usuarios
-router.put('/', async (req, res) => {
+router.put('/modificarusuario', async (req, res) => {
   try {
     const usuario = req.body;
     await usuariosController.modificarUsuario(usuario);
@@ -40,7 +40,7 @@ router.put('/', async (req, res) => {
 });
 
 // Ruta para eliminar usuarios
-router.delete('/', async (req, res) => {
+router.delete('/eliminarusuario', async (req, res) => {
   try {
     const email = req.body.email;
     await usuariosController.eliminarUsuario(email);

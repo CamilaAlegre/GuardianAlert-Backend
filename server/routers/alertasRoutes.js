@@ -4,7 +4,7 @@ const router = express.Router();
 const alertasController = require('./DB_Alertas');
 
 // Ruta para agregar una alerta
-router.post('/', async (req, res) => {
+router.post('/agregaralerta', async (req, res) => {
   try {
     const alerta = req.body;
     await alertasController.agregarHistorialEventos(alerta);
@@ -16,7 +16,7 @@ router.post('/', async (req, res) => {
 });
 
 // Ruta para consultar alertas por emailusuario
-router.get('/:emailusuario', async (req, res) => {
+router.get('/:consultaralertaemailusuario', async (req, res) => {
   try {
     const emailusuario = req.params.emailusuario;
     const alertas = await alertasController.consultasdealertas(emailusuario);
