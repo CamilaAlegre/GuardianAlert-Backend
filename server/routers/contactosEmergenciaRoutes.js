@@ -4,7 +4,7 @@ const router = express.Router();
 const contactosEmergenciaController = require('./DB_ContactosEmergencia');
 
 // Ruta para agregar un contacto de emergencia
-router.post('/', async (req, res) => {
+router.post('/agregarcontactoemergencia', async (req, res) => {
   try {
     const contactoEmergencia = req.body;
     await contactosEmergenciaController.agregarContactoEmergencia(contactoEmergencia);
@@ -16,7 +16,7 @@ router.post('/', async (req, res) => {
 });
 
 // Ruta para consultar contactos de emergencia por usuarioemail
-router.get('/:usuarioemail', async (req, res) => {
+router.get('/:agregarusuarioemail', async (req, res) => {
   try {
     const usuarioemail = req.params.usuarioemail;
     const contactos = await contactosEmergenciaController.consultaContactosdeEmergencia(usuarioemail);
@@ -28,7 +28,7 @@ router.get('/:usuarioemail', async (req, res) => {
 });
 
 // Ruta para eliminar contactos de emergencia
-router.delete('/', async (req, res) => {
+router.delete('/eliminarcontactoemergencia', async (req, res) => {
   try {
     const filtro = req.body;
     await contactosEmergenciaController.eliminarContactosDeEmergencia(filtro);

@@ -40,8 +40,7 @@ app.get('/caidas', async (req, res) => {
 
 
 
-
-
+/*
     if (isCaida) {
       const Evento = require('../Evento');
   
@@ -54,10 +53,10 @@ app.get('/caidas', async (req, res) => {
        'Caida'
       );
   
-      const chatIds = ['1119289333', '6308381260'];
-  
-      const latitude = 37.7749;
-      const longitude = -122.4194;
+      const chatIds = await mongoManager.consultaContactosdeEmergencia(datos.emailusuario);
+
+      const latitude = datos.latitude;
+      const longitude = datos.longitude
   
       // Send messages and locations to chatIds using Telegram class
       telegram.sendMessageAndLocationToChatIds(chatIds, evento, latitude, longitude)
@@ -67,13 +66,12 @@ app.get('/caidas', async (req, res) => {
         .catch((error) => {
           console.error('Error al enviar mensajes y ubicaciones:', error);
         });
-    }
+    }*/
   } catch (error) {
     console.error('Error during prediction:', error);
     res.status(500).send('Internal Server Error');
   }
   
-
 
 
   

@@ -36,7 +36,7 @@ app.get('/impactos', async (req, res) => {
 
 
 
-
+/*
 
     if (isImpact) {
       const Evento = require('../Evento');
@@ -63,7 +63,7 @@ app.get('/impactos', async (req, res) => {
         .catch((error) => {
           console.error('Error al enviar mensajes y ubicaciones:', error);
         });
-    }
+    }*/
   } catch (error) {
     console.error('Error during prediction:', error);
     res.status(500).send('Internal Server Error');
