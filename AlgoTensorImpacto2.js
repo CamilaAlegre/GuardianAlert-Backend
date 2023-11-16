@@ -74,11 +74,22 @@ class AlgoTensorImpacto2 {
     }
   }
 
+
+  
+
+  normalizeData(data) {
+    const tensorData = tf.tensor2d(data);
+    const mean = tensorData.mean(0);
+    const std = tensorData.sub(mean).square().mean(0).sqrt();
+    const normalizedData = tensorData.sub(mean).div(std);
+    return normalizedData;
+  }
+
   // Método para entrenar la red neuronal
   async trainNeuralNetwork(options, dataset,inputForPrediction) {
 
     const { iterations } = options;
-    const inputs = tf.tensor(dataset.map(item => item.input));
+  /*  const inputs = tf.tensor(dataset.map(item => item.input));
     const outputs = tf.tensor(dataset.map(item => item.output));
 
      await this.model.fit(inputs, outputs, {
@@ -89,12 +100,32 @@ class AlgoTensorImpacto2 {
       verbose: 0, // Configura verbose en 0 para evitar la salida en pantalla
    }).then(info => {
     console.log('Entrenamiento completado.');
+*/
 
-    
-  const prediction = this.predict(inputForPrediction);
-  return prediction;
-  });
+
+const inputs = this.normalizeData(this.dataset.map(item => item.input));
+const outputs = tf.tensor(this.dataset.map(item => item.output));
+
+ await this.model.fit(inputs, outputs, {
+
+
+epochs: 10, 
+batchSize: 16,  
+error: 0.005,
+shuffle: true,
+verbose: 0,
+rate:0.001,
+
+
+
+}).then(info => {
+  console.log('Entrenamiento completado.');
+
+
   
+const prediction = this.predict(inputForPrediction);
+return prediction;
+});
   }
   // Método para realizar predicciones
  async predict(inputData) {

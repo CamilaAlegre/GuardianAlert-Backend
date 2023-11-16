@@ -8,7 +8,7 @@ class AlgoTensorGolpes {
     // Crear el modelo secuencial de TensorFlow.js
     this.model = tf.sequential();
 
-    this.model.add(tf.layers.dense({ units: 10, inputShape: [13], activation: 'relu' }));
+    this.model.add(tf.layers.dense({ units: 13, inputShape: [13], activation: 'relu' }));
 
     this.model.add(tf.layers.dense({ units: 1, outputShape: [1],activation: 'sigmoid' }));
 
@@ -74,9 +74,25 @@ class AlgoTensorGolpes {
     }
   }
 
+
+
+
+
+
+  normalizeData(data) {
+    const tensorData = tf.tensor2d(data);
+    const mean = tensorData.mean(0);
+    const std = tensorData.sub(mean).square().mean(0).sqrt();
+    const normalizedData = tensorData.sub(mean).div(std);
+    return normalizedData;
+  }
+
+
+
+
   // Método para entrenar la red neuronal
   async trainNeuralNetwork(options, dataset,inputForPrediction) {
-
+/*
     const { iterations } = options;
     const inputs = tf.tensor(dataset.map(item => item.input));
     const outputs = tf.tensor(dataset.map(item => item.output));
@@ -89,6 +105,23 @@ class AlgoTensorGolpes {
       verbose: 0, // Configura verbose en 0 para evitar la salida en pantalla
    }).then(info => {
     console.log('Entrenamiento completado.');
+
+    */
+
+    const inputs = this.normalizeData(this.dataset.map(item => item.input));
+    const outputs = tf.tensor(this.dataset.map(item => item.output));
+
+     await this.model.fit(inputs, outputs, {
+     epochs: 200, 
+     batchSize: 64, 
+     error: 0.005,
+     shuffle: true,
+     verbose: 0,
+     rate:0.00001,
+   //  validationSplit: 0.09,
+  }).then(info => {
+    console.log('Entrenamiento completado.');
+
 
     
   const prediction = this.predict(inputForPrediction);

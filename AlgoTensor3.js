@@ -75,7 +75,7 @@ class AlgoTensor3 {
  async trainNeuralNetwork(options, dataset,inputForPrediction) {
 
     const { iterations } = options;
-    const inputs =  tf.tensor(dataset.map(item => item.input));
+  /*  const inputs =  tf.tensor(dataset.map(item => item.input));
     const outputs =  tf.tensor(dataset.map(item => item.output));
 
     await this.model.fit(inputs, outputs, {
@@ -87,7 +87,20 @@ class AlgoTensor3 {
       verbose: 0,
       rate:0.1,
       validationSplit: 0.2,
-   });
+   });*/
+
+   const inputs =  tf.tensor(this.dataset.map(item => item.input));
+   const outputs =  tf.tensor(this.dataset.map(item => item.output));
+
+   await this.model.fit(inputs, outputs, {
+    epochs: 200, 
+     batchSize: 32,  
+     error: 0.005,
+     shuffle: true,
+     verbose: 0,
+     rate:0.1,
+  });
+  
    
    console.log('Entrenamiento completado.');
 
