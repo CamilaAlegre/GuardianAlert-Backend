@@ -17,9 +17,9 @@ const usersRouter = require('./routers/usersRoutes');
 const contactsRouter = require('./routers/contactsRoutes');
 const eventsRouter = require('./routers/eventRoutes');
 const dataRouter = require('./routers/dataRoutes');
+const fallDetectionRoutes = require('./routers/neuronalNetworkFallRoutes'); 
 
 const port = 3000;
-
 const app = express();
 
 app.set("secretKey",process.env.SECRET_KEY);
@@ -35,6 +35,7 @@ app.use('/users', usersRouter);
 app.use('/contacts', contactsRouter);
 app.use('/events', eventsRouter);
 app.use('/data', dataRouter);
+app.use('/fall-detection', fallDetectionRoutes); 
 
 app.use(cors()); 
 

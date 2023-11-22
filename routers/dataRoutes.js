@@ -5,7 +5,6 @@ const router = express.Router();
 router.post("/sensors", (req, res) => {
     try {
       console.log('Received POST request with data:', req.body);
-      // Resto del código para procesar los datos
       // Enviar una respuesta exitosa
       res.status(200).send('Datos recibidos con éxito.');
     } catch (error) {

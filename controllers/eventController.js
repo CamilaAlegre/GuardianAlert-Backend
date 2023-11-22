@@ -22,14 +22,15 @@ const getByIdEvent = async function (req, res, next) {
 
 const createEvent = async function (req, res, next) {
   try {
-   
     const event = new EventsModel({
       date: req.body.fecha,
       place: req.body.lugar,
-      type: req.body.tipoEvento,
+      type: req.body.tipo,
       status: req.body.estado,
+      user:req.body.user
     });
     console.log(event)
+
     const document = await event.save();
     res.status(201).json({ event: document });
   } catch (e) {
@@ -48,4 +49,24 @@ const deleteEvent= async function (req, res, next) {
   }
 };
 
-module.exports = {getAllEvents,getByIdEvent,createEvent,deleteEvent};
+const getEventsByUserId = async function (req, res, next) {
+  try {
+    const userId = req.params.id; // Obtiene el ID del usuario de los parámetros de la solicitud
+
+    const events = await EventsModel.find({ user: userId }); // Busca todos los eventos asociados al usuario con este ID
+
+    console.log(events);
+
+    if (!events) {
+      return res.status(404).json({ message: "No se encontraron eventos para este usuario" });
+    }
+
+    res.status(200).json({ events }); // Responde con los eventos encontrados
+  } catch (e) {
+    console.log(e);
+    res.status(500).json({ message: "Error interno del servidor" });
+  }
+};
+
+
+module.exports = {getAllEvents,getByIdEvent,createEvent,deleteEvent,getEventsByUserId };

@@ -5,8 +5,7 @@ const eventsController = require('../controllers/eventController');
 //Retornando todos los eventos
 router.get("/",eventsController.getAllEvents);
 
-//Retornando un evento dado su id
-router.get("/:id",eventsController.getByIdEvent);
+router.get("/:id",eventsController.getEventsByUserId);
 
 //Crear un evento
 router.post("/create",eventsController.createEvent);
