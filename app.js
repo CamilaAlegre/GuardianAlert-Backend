@@ -23,21 +23,20 @@ const port = 3000;
 const app = express();
 
 app.set("secretKey",process.env.SECRET_KEY);
-app.use(bodyParser.json());
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(bodyParser.json()); 
+app.use(cors());
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/contacts', contactsRouter);
 app.use('/events', eventsRouter);
 app.use('/data', dataRouter);
-app.use('/fall-detection', fallDetectionRoutes); 
-
-app.use(cors()); 
+app.use('/fall-detection', fallDetectionRoutes);
 
 function verifyToken(req, res, next) {
   const authHeader = req.headers["authorization"];
