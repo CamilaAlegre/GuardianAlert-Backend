@@ -17,9 +17,6 @@ const usersRouter = require('./routers/usersRoutes');
 const contactsRouter = require('./routers/contactsRoutes');
 const eventsRouter = require('./routers/eventRoutes');
 const dataRouter = require('./routers/dataRoutes');
-const fallDetectionRoutes = require('./routers/neuronalNetworkFallRoutes'); 
-const impactDetectionRoutes = require('./routers/neuronalNetworkImpactRoutes'); 
-const hitsDetectionRoutes = require('./routers/neuronalNetworkHitsRoutes'); 
 
 const port = 3000;
 const app = express();
@@ -38,9 +35,6 @@ app.use('/users', usersRouter);
 app.use('/contacts', contactsRouter);
 app.use('/events', eventsRouter);
 app.use('/data', dataRouter);
-app.use('/fall-detection', fallDetectionRoutes);
-app.use('/impact-detection', impactDetectionRoutes);
-app.use('/hits-detection', hitsDetectionRoutes);
 
 function verifyToken(req, res, next) {
   const authHeader = req.headers["authorization"];
