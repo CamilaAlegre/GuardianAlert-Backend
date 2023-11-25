@@ -1,11 +1,14 @@
 const TensorFall = require('./tensorFall');
 const TensorImpact = require('./tensorImpact');
 const TensorHits = require('./tensorHits');
+const jwt = require('jsonwebtoken');
+const events=require('./eventController');
+const Telegram = require('./telegram');
+require('dotenv').config();
 
 const tensorFall = new TensorFall();
 const tensorImpact = new TensorImpact();
 const tensorHits = new TensorHits();
-
 const THRESHOLD = 0.5;
 
 const transformFallData = (frontEndData) => {
@@ -66,22 +69,47 @@ const detectEvents = async (req, res) => {
     let event;
 
     if (isFall) {
-      event = 'fall';
+      event = 'caida';
     } else if (isImpact) {
-      event = 'impact';
+      event = 'impacto';
     } else if (isHit) {
-      event = 'hit';
+      event = 'golpe';
     } else {
       event = 'no-event';
     }
 
+    // Extraer el usuario del token
+    const decodedToken = jwt.decode(req.body.token);
+
+    if (decodedToken) {
+      const userId = decodedToken.userId;
+      console.log('Usuario extraído del token:', userId);
+    } else {
+      console.error('No se pudo decodificar el token correctamente');
+    }
+
+    console.log('Antes de crear el evento');
+    const createdEvent = await events.createEvent(event, decodedToken, req.body.latitude, req.body.longitude);
+    console.log('Evento creado:', createdEvent);
+    
     console.log('Evento detectado:', event);
+
+    if (createdEvent && createdEvent._id) {
+      const telegram = new Telegram();
+      const chatIds = [process.env.CHAT_ID];
+
+      console.log('Antes de enviar mensajes de Telegram');
+      await telegram.sendMessageAndLocationToChatIds(chatIds,decodedToken, event, req.body.latitude, req.body.longitude);
+      console.log('Mensajes de Telegram enviados correctamente');
+    
+    }
 
     res.status(200).json({
       fallPrediction: isFall,
       impactPrediction: isImpact,
       hitsPrediction: isHit,
       event,
+      createdEvent,  // Puedes devolver el evento creado si es necesario
       result: 'Procesamiento exitoso',
     });
 

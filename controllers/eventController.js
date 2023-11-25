@@ -20,24 +20,35 @@ const getByIdEvent = async function (req, res, next) {
   }
 };
 
-const createEvent = async function (req, res, next) {
+const createEvent = async (eventType, decodedToken,latitude,longitude) => {
   try {
+    const userName = decodedToken.name;
+    const userLastName = decodedToken.lastname;
+    const user = `${userName} ${userLastName}`;
+    const currentDate = new Date();
+    const location=`${latitude},${longitude}`;
+
+    console.log('Creando nuevo evento...');
+    
     const event = new EventsModel({
-      date: req.body.fecha,
-      place: req.body.lugar,
-      type: req.body.tipo,
-      status: req.body.estado,
-      user:req.body.user
+      date: currentDate,
+      place: location,
+      type: eventType,
+      status: 'activo',
+      user: user,
     });
-    console.log(event)
 
     const document = await event.save();
-    res.status(201).json({ event: document });
-  } catch (e) {
-    console.log(e);
-    res.status(400).json(e.message);
+    console.log('Evento creado exitosamente:', document);
+
+    return document;
+
+  } catch (error) {
+    console.error('Error durante la creación del evento:', error);
+    throw error;
   }
 };
+
 
 const deleteEvent= async function (req, res, next) {
   try {

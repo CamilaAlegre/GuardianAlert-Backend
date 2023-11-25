@@ -89,29 +89,41 @@ const deleteUser = async function (req, res, next) {
 
 const login = async function (req, res, next) {
   try {
-    const document = await UsersModel.findOne({email:req.body.email});
-    if(!document){
-      return res.json({message:"El email y/o contraseña son incorrectos"});
+    const document = await UsersModel.findOne({ email: req.body.email });
+    if (!document) {
+      return res.json({ message: "El email y/o contraseña son incorrectos" });
     }
+
     if (bcrypt.compareSync(req.body.password, document.password)) {
+      // Incluir los campos name, lastname, y email en el token
+      const tokenPayload = {
+        userId: document._id,
+        name: document.name,
+        lastname: document.lastname,
+        email: document.email,
+      };
+
       const token = jwt.sign(
-        { userId: document._id },
+        tokenPayload,
         req.app.get("secretKey"),
         {
           expiresIn: "1h",
         }
       );
-      console.log(token)
-      res.json(token);
-    }else{
-      return  res.json({message:"El email y/o contraseña son incorrectos"});
-    }
 
+      // Respondemos con el token y los campos name, lastname, y email
+      res.json({
+        token
+      });
+    } else {
+      return res.json({ message: "El email y/o contraseña son incorrectos" });
+    }
   } catch (e) {
     console.log(e);
     res.status(400).json(e.message);
   }
 };
+
 
 const extractUserId = async function (req, res, next) {
   try {
