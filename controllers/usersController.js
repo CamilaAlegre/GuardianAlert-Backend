@@ -58,7 +58,6 @@ const createUser = async function (req, res, next) {
   }
 };
 
-
 const updateUser = async function (req, res, next) {
   try {
     const user = await UsersModel.findById(req.params.id);
@@ -103,15 +102,8 @@ const login = async function (req, res, next) {
         email: document.email,
       };
 
-      const token = jwt.sign(
-        tokenPayload,
-        req.app.get("secretKey"),
-        {
-          expiresIn: "1h",
-        }
+      const token = jwt.sign(tokenPayload, "M1s3cr3t0",{expiresIn: "1h"}
       );
-
-      // Respondemos con el token y los campos name, lastname, y email
       res.json({
         token
       });
@@ -124,24 +116,33 @@ const login = async function (req, res, next) {
   }
 };
 
-
 const extractUserId = async function (req, res, next) {
   try {
-    const token = req.body.token; // Supongo que el token se envía en el header 'Authorization'
-    if (!token) {
-      return res.status(401).json({ message: 'Token no proporcionado' });
-    }
+    const token = req.body.token;
 
-    jwt.verify(token, req.app.get('secretKey'), (err, decoded) => {
+    console.log("soy el token")
+    console.log(token)
+
+    // Se elimina comillas del token
+    const tokenWithoutQuotes = token.replace(/^"(.*)"$/, '$1');
+
+    jwt.verify(tokenWithoutQuotes, "M1s3cr3t0", (err, decoded) => {
       if (err) {
+        console.error('Error al verificar el token:', err);
         return res.status(401).json({ message: 'Token inválido' });
       }
-      const userId = decoded.userId; // Extraer el ID de usuario del token decodificado
-      req.userId = userId; // Asignar el ID del usuario a req para su uso en otros controladores
+      const userId = decoded.userId;
+      console.log(userId);
+      if (!userId) {
+        console.error('No se pudo extraer el ID de usuario del token.');
+        return res.status(401).json({ message: 'Token inválido' });
+      }
+      req.userId = userId;
+      console.log('Decoded User ID:', userId);
       next();
     });
   } catch (e) {
-    console.log(e);
+    console.error('Error en la función extractUserId:', e);
     res.status(500).json({ message: 'Error interno del servidor' });
   }
 };

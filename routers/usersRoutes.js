@@ -11,6 +11,9 @@ router.get("/:id", usersController.getByIdUser);
 //se envia token y devuelve id de usuario
 router.post('/token', usersController.extractUserId, (req, res) => {
     const userId = req.userId; // Se accede al ID de usuario obtenido del middleware extractUserId
+    
+    console.log(userId)
+    
     if (!userId) {
       return res.status(401).json({ message: 'No se proporcionó un ID de usuario' });
     }

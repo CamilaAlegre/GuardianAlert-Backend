@@ -21,13 +21,14 @@ const dataRouter = require('./routers/dataRoutes');
 const port = 3000;
 const app = express();
 
-app.set("secretKey",process.env.SECRET_KEY);
+//app.set("secretKey",process.env.SECRET_KEY);
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.json()); 
+
 app.use(cors());
 
 app.use('/', indexRouter);
@@ -40,7 +41,7 @@ function verifyToken(req, res, next) {
   const authHeader = req.headers["authorization"];
   if (authHeader) {
     const token = authHeader.split(" ")[1];
-    jwt.verify(token, req.app.get("secretKey"), function (error, payload) {
+    jwt.verify(token, req.app.get( "M1s3cr3t0"), function (error, payload) {
       if (error) {
         return res.status(401).json({ message: error.message });
       } else {

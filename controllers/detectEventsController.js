@@ -77,21 +77,26 @@ const detectEvents = async (req, res) => {
     } else {
       event = 'no-event';
     }
-
+    console.log(event);
+    console.log({'latitud': req.body.latitude});
+    console.log({'longitud':req.body.longitude});
     // Extraer el usuario del token
-    const decodedToken = jwt.decode(req.body.token);
+    const token = req.body.token.replace(/^"(.*)"$/, '$1');
+    const decodedToken = jwt.decode(token);
+    console.log(decodedToken);
 
-    if (decodedToken) {
-      const userId = decodedToken.userId;
-      console.log('Usuario extraído del token:', userId);
-    } else {
-      console.error('No se pudo decodificar el token correctamente');
+    if (!decodedToken || !decodedToken.userId) {
+      console.error('No se pudo extraer el usuario del token correctamente');
+      return res.status(401).json({ message: 'Token inválido o no proporcionado' });
     }
+
+    const userId = decodedToken.userId;
+    console.log('Usuario extraído del token:', userId);
 
     console.log('Antes de crear el evento');
     const createdEvent = await events.createEvent(event, decodedToken, req.body.latitude, req.body.longitude);
     console.log('Evento creado:', createdEvent);
-    
+
     console.log('Evento detectado:', event);
 
     if (createdEvent && createdEvent._id) {
@@ -99,20 +104,21 @@ const detectEvents = async (req, res) => {
       const chatIds = [process.env.CHAT_ID];
 
       console.log('Antes de enviar mensajes de Telegram');
-      await telegram.sendMessageAndLocationToChatIds(chatIds,decodedToken, event, req.body.latitude, req.body.longitude);
+      await telegram.sendMessageAndLocationToChatIds(chatIds, decodedToken, event, req.body.latitude, req.body.longitude);
       console.log('Mensajes de Telegram enviados correctamente');
-    
+
+      res.status(200).json({
+        fallPrediction: isFall,
+        impactPrediction: isImpact,
+        hitsPrediction: isHit,
+        event,
+        createdEvent,  // Puedes devolver el evento creado si es necesario
+        result: 'Procesamiento exitoso',
+      });
+    } else {
+      console.error('No se pudo crear el evento correctamente');
+      res.status(500).send('Error interno del servidor');
     }
-
-    res.status(200).json({
-      fallPrediction: isFall,
-      impactPrediction: isImpact,
-      hitsPrediction: isHit,
-      event,
-      createdEvent,  // Puedes devolver el evento creado si es necesario
-      result: 'Procesamiento exitoso',
-    });
-
   } catch (error) {
     console.error('Error durante el procesamiento:', error);
     res.status(500).send('Error interno del servidor');
